@@ -62,28 +62,32 @@ public static class AdditionGenerator
 
     static string Packages(Plan plan)
     {
-        var builder = new StringBuilder("<!-- Merge into Directory.Packages.props. Without central package management, use these versions on the PackageReference items instead. -->\n");
-        builder.Append("<Project>\n  <ItemGroup>\n");
-        foreach (var package in plan.AddedPackages)
-        {
-            builder.Append($"    <PackageVersion Include=\"{package}\" Version=\"{plan.Version(package)}\" />\n");
-        }
+        var versions = plan.AddedPackages.Select(_ => $"""    <PackageVersion Include="{_}" Version="{plan.Version(_)}" />""");
+        return
+            $"""
+             <!-- Merge into Directory.Packages.props. Without central package management, use these versions on the PackageReference items instead. -->
+             <Project>
+               <ItemGroup>
+             {string.Join('\n', versions)}
+               </ItemGroup>
+             </Project>
 
-        builder.Append("  </ItemGroup>\n</Project>\n");
-        return builder.ToString();
+             """;
     }
 
     static string Project(Plan plan)
     {
-        var builder = new StringBuilder("<!-- Merge into the endpoint's project file. -->\n");
-        builder.Append("<Project>\n  <ItemGroup>\n");
-        foreach (var package in plan.AddedPackages)
-        {
-            builder.Append($"    <PackageReference Include=\"{package}\" />\n");
-        }
+        var references = plan.AddedPackages.Select(_ => $"""    <PackageReference Include="{_}" />""");
+        return
+            $"""
+             <!-- Merge into the endpoint's project file. -->
+             <Project>
+               <ItemGroup>
+             {string.Join('\n', references)}
+               </ItemGroup>
+             </Project>
 
-        builder.Append("  </ItemGroup>\n</Project>\n");
-        return builder.ToString();
+             """;
     }
 
     /// <summary>

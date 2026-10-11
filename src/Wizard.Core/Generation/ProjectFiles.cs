@@ -45,26 +45,25 @@ public static class ProjectFiles
 
     public static string DirectoryPackagesProps(Plan plan)
     {
-        var builder = new StringBuilder();
-        builder.Append(
-            """
-            <Project>
-              <!-- Central Package Management: every package version is set here, once. Projects reference
-                   packages with <PackageReference Include="..." /> and no Version.
-                   https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
-              <PropertyGroup>
-                <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-              </PropertyGroup>
+        var groups = PackageGroups(plan).Select(_ => Versions(_.Comment, _.Packages, plan));
+        return
+            $"""
+             <Project>
+               <!-- Central Package Management: every package version is set here, once. Projects reference
+                    packages with <PackageReference Include="..." /> and no Version.
+                    https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
+               <PropertyGroup>
+                 <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+               </PropertyGroup>
+             {Lines(groups)}
+             </Project>
 
-            """);
-        foreach (var (comment, packages) in PackageGroups(plan))
-        {
-            AppendVersions(builder, comment, packages, plan);
-        }
-
-        builder.Append("</Project>\n");
-        return builder.ToString();
+             """;
     }
+
+    /// <summary>Items that fill a hole in a template, one per line. Each carries its own indentation.</summary>
+    static string Lines(IEnumerable<string> lines) =>
+        string.Join('\n', lines);
 
     /// <summary>
     /// The packages grouped by what brought them in, each listed once, under the first component that
@@ -107,17 +106,20 @@ public static class ProjectFiles
             _ => "Feature"
         };
 
-    static void AppendVersions(StringBuilder builder, string comment, IEnumerable<string> packages, Plan plan)
+    static string Versions(string comment, IEnumerable<string> packages, Plan plan)
     {
-        builder.Append($"  <!-- {comment} -->\n");
-        builder.Append("  <ItemGroup>\n");
-        foreach (var package in packages)
-        {
-            builder.Append($"    <PackageVersion Include=\"{package}\" Version=\"{plan.Version(package)}\" />\n");
-        }
-
-        builder.Append("  </ItemGroup>\n");
+        var versions = packages.Select(_ => $"""    <PackageVersion Include="{_}" Version="{plan.Version(_)}" />""");
+        return
+            $"""
+               <!-- {comment} -->
+               <ItemGroup>
+             {Lines(versions)}
+               </ItemGroup>
+             """;
     }
+
+    static string PackageReferences(IEnumerable<string> packages) =>
+        Lines(packages.Select(_ => $"""    <PackageReference Include="{_}" />"""));
 
     public const string GitIgnore =
         """
@@ -155,21 +157,26 @@ public static class ProjectFiles
 
     public static string Slnx(Plan plan, IEnumerable<string> solutionItems)
     {
-        var builder = new StringBuilder("<Solution>\n  <Folder Name=\"/Solution Items/\">\n");
-        foreach (var item in solutionItems)
+        var items = solutionItems.Select(_ => $"""    <File Path="{_}" />""");
+        var projects = new List<string>
         {
-            builder.Append($"    <File Path=\"{item}\" />\n");
-        }
-
-        builder.Append("  </Folder>\n");
-        builder.Append($"  <Project Path=\"src/{plan.EndpointProject}/{plan.EndpointProject}.csproj\" />\n");
+            plan.EndpointProject
+        };
         if (plan.Tests != null)
         {
-            builder.Append($"  <Project Path=\"src/{plan.TestProject}/{plan.TestProject}.csproj\" />\n");
+            projects.Add(plan.TestProject);
         }
 
-        builder.Append("</Solution>\n");
-        return builder.ToString();
+        return
+            $"""
+             <Solution>
+               <Folder Name="/Solution Items/">
+             {Lines(items)}
+               </Folder>
+             {Lines(projects.Select(_ => $"""  <Project Path="src/{_}/{_}.csproj" />"""))}
+             </Solution>
+
+             """;
     }
 
     public static string EndpointProject(Plan plan)
@@ -180,46 +187,50 @@ public static class ProjectFiles
             sdk = "Microsoft.NET.Sdk.Web";
         }
 
-        var builder = new StringBuilder($"<Project Sdk=\"{sdk}\">\n");
-        builder.Append("  <!-- The target framework and language settings are in Directory.Build.props; versions are in Directory.Packages.props. -->\n");
-        builder.Append("  <ItemGroup>\n");
-        foreach (var package in plan.EndpointPackages)
-        {
-            builder.Append($"    <PackageReference Include=\"{package}\" />\n");
-        }
+        return
+            $"""
+             <Project Sdk="{sdk}">
+               <!-- The target framework and language settings are in Directory.Build.props; versions are in Directory.Packages.props. -->
+               <ItemGroup>
+             {PackageReferences(plan.EndpointPackages)}
+               </ItemGroup>
+             </Project>
 
-        builder.Append("  </ItemGroup>\n");
-        builder.Append("</Project>\n");
-        return builder.ToString();
+             """;
     }
 
     public static string TestProject(Plan plan, TestFrameworkInfo tests)
     {
-        var builder = new StringBuilder("<Project Sdk=\"Microsoft.NET.Sdk\">\n");
+        var groups = new List<string>();
         if (tests.Properties.Count > 0)
         {
-            builder.Append("  <PropertyGroup>\n");
-            builder.Append("    <!-- Runs as a Microsoft.Testing.Platform app; dotnet test uses it through the runner set in global.json. -->\n");
-            foreach (var (property, value) in tests.Properties)
-            {
-                builder.Append($"    <{property}>{value}</{property}>\n");
-            }
-
-            builder.Append("  </PropertyGroup>\n");
+            var properties = tests.Properties.Select(_ => $"    <{_.Name}>{_.Value}</{_.Name}>");
+            groups.Add(
+                $"""
+                   <PropertyGroup>
+                     <!-- Runs as a Microsoft.Testing.Platform app; dotnet test uses it through the runner set in global.json. -->
+                 {Lines(properties)}
+                   </PropertyGroup>
+                 """);
         }
 
-        builder.Append("  <ItemGroup>\n");
-        foreach (var package in plan.TestPackages)
-        {
-            builder.Append($"    <PackageReference Include=\"{package}\" />\n");
-        }
+        groups.Add(
+            $"""
+               <ItemGroup>
+             {PackageReferences(plan.TestPackages)}
+               </ItemGroup>
+               <ItemGroup>
+                 <ProjectReference Include="..\{plan.EndpointProject}\{plan.EndpointProject}.csproj" />
+               </ItemGroup>
+             """);
 
-        builder.Append("  </ItemGroup>\n");
-        builder.Append("  <ItemGroup>\n");
-        builder.Append($"    <ProjectReference Include=\"..\\{plan.EndpointProject}\\{plan.EndpointProject}.csproj\" />\n");
-        builder.Append("  </ItemGroup>\n");
-        builder.Append("</Project>\n");
-        return builder.ToString();
+        return
+            $"""
+             <Project Sdk="Microsoft.NET.Sdk">
+             {Lines(groups)}
+             </Project>
+
+             """;
     }
 
     /// <summary>
@@ -238,18 +249,31 @@ public static class ProjectFiles
             levels.Add(("Microsoft.AspNetCore", "Warning"));
         }
 
-        var builder = new StringBuilder("{\n  \"Logging\": {\n    \"LogLevel\": {\n");
-        builder.Append(string.Join(",\n", levels.Select(_ => $"      \"{_.Item1}\": \"{_.Item2}\"")));
-        builder.Append("\n    }\n  }");
-        if (plan.Connections.Count > 0)
+        var logLevels = string.Join(",\n", levels.Select(_ => $"      \"{_.Item1}\": \"{_.Item2}\""));
+        var logging =
+            $$"""
+                "Logging": {
+                  "LogLevel": {
+              {{logLevels}}
+                  }
+                }
+              """;
+        if (plan.Connections.Count == 0)
         {
-            builder.Append(",\n  \"ConnectionStrings\": {\n");
-            builder.Append(string.Join(",\n", plan.Connections.Select(_ => $"    \"{_.Name}\": \"{Json(DevelopmentValue(_, plan))}\"")));
-            builder.Append("\n  }");
+            return $"{{\n{logging}\n}}\n";
         }
 
-        builder.Append("\n}\n");
-        return builder.ToString();
+        var connections = string.Join(",\n", plan.Connections.Select(_ => $"    \"{_.Name}\": \"{Json(DevelopmentValue(_, plan))}\""));
+        return
+            $$"""
+              {
+              {{logging}},
+                "ConnectionStrings": {
+              {{connections}}
+                }
+              }
+
+              """;
     }
 
     public static string DevelopmentValue(ConnectionDefinition connection, Plan plan) =>
@@ -267,10 +291,14 @@ public static class ProjectFiles
         }
 
         var builder = new StringBuilder();
-        builder.Append($"# Generated by the NServiceBus wizard: {plan.WizardUrl}\n");
-        builder.Append("# What the endpoint needs in order to run on a developer's machine. The passwords are for these\n");
-        builder.Append("# local containers only; never reuse them.\n");
-        builder.Append("services:\n");
+        builder.Append(
+            $"""
+             # Generated by the NServiceBus wizard: {plan.WizardUrl}
+             # What the endpoint needs in order to run on a developer's machine. The passwords are for these
+             # local containers only; never reuse them.
+             services:
+
+             """);
         builder.Append(string.Join("\n\n", plan.Infrastructure.Select(_ => Template.Render(_.Compose, plan))));
         builder.Append('\n');
         return builder.ToString();

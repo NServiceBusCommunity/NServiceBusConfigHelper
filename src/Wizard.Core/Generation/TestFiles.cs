@@ -106,24 +106,29 @@ public static class TestFiles
         string method,
         string body)
     {
-        var builder = new StringBuilder();
-        foreach (var import in usings.Concat(tests.Usings).Distinct(StringComparer.Ordinal).Order(StringComparer.Ordinal))
-        {
-            builder.Append($"using {import};\n");
-        }
+        var imports = usings
+            .Concat(tests.Usings)
+            .Distinct(StringComparer.Ordinal)
+            .Order(StringComparer.Ordinal)
+            .Select(_ => $"using {_};");
+        // The attributes and the declaration are one hole, so a framework with no class attribute leaves no blank line.
+        IEnumerable<string> declaration = [.. tests.ClassAttributes, $"public class {name}"];
+        return
+            $$"""
+              {{string.Join('\n', imports)}}
 
-        builder.Append($"\nnamespace {plan.Namespace}.Tests;\n\n");
-        foreach (var attribute in tests.ClassAttributes)
-        {
-            builder.Append($"{attribute}\n");
-        }
+              namespace {{plan.Namespace}}.Tests;
 
-        builder.Append($"public class {name}\n{{\n");
-        builder.Append($"    {tests.TestAttribute}\n");
-        builder.Append($"    public async Task {method}()\n    {{\n");
-        builder.Append(Template.Indent(Normalize(body).TrimEnd('\n'), "        "));
-        builder.Append("\n    }\n}\n");
-        return builder.ToString();
+              {{string.Join('\n', declaration)}}
+              {
+                  {{tests.TestAttribute}}
+                  public async Task {{method}}()
+                  {
+              {{Template.Indent(Normalize(body).TrimEnd('\n'), "        ")}}
+                  }
+              }
+
+              """;
     }
 
     static string Normalize(string text) =>

@@ -13,8 +13,14 @@ public sealed record RefreshResult(
         var builder = new StringBuilder();
         if (Changed)
         {
-            builder.Append("Newest stable versions on nuget.org.\n\n");
-            builder.Append("| Package | From | To |\n|---|---|---|\n");
+            builder.Append(
+                """
+                Newest stable versions on nuget.org.
+
+                | Package | From | To |
+                |---|---|---|
+
+                """);
             foreach (var (id, from, to) in Changes)
             {
                 builder.Append($"| {id} | {from} | {to} |\n");
@@ -27,7 +33,12 @@ public sealed record RefreshResult(
 
         if (Unanswered.Count > 0)
         {
-            builder.Append($"\nNot checked, because nuget.org did not answer: {string.Join(", ", Unanswered)}.\n");
+            builder.Append(
+                $"""
+
+                 Not checked, because nuget.org did not answer: {string.Join(", ", Unanswered)}.
+
+                 """);
         }
 
         return builder.ToString();
