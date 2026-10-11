@@ -23,7 +23,18 @@ public sealed record InteractionResult(
     Severity Severity,
     IReadOnlyList<string> Involved,
     string Message,
-    bool Stack = false);
+    bool Stack = false)
+{
+    /// <summary>
+    /// For a conflict: feature id to what that feature's card says about it, such as "Conflicts with
+    /// Send-only". The notice explains the whole conflict, but it sits at the end of a long list; the
+    /// mark is on the card that was just clicked. It can name a feature that is not selected, when
+    /// selecting it is what resolves the conflict.
+    /// </summary>
+    public IReadOnlyDictionary<string, string> Marks { get; init; } = noMarks;
+
+    static IReadOnlyDictionary<string, string> noMarks = new Dictionary<string, string>(StringComparer.Ordinal);
+}
 
 /// <summary>
 /// What follows from a combination of answers that no single one of them says: features that cannot
@@ -46,6 +57,14 @@ public static class InteractionRules
     public static bool Blocked(WizardState state) =>
         Evaluate(state).Any(_ => _.Severity == Severity.Conflict);
 
+    /// <summary>Feature id to everything its card says, across the conflicts among <paramref name="results"/>.</summary>
+    public static IReadOnlyDictionary<string, IReadOnlyList<string>> Marks(IEnumerable<InteractionResult> results) =>
+        results
+            .Where(_ => _.Severity == Severity.Conflict)
+            .SelectMany(_ => _.Marks)
+            .GroupBy(_ => _.Key, _ => _.Value, StringComparer.Ordinal)
+            .ToDictionary(_ => _.Key, IReadOnlyList<string> (_) => [.. _.Distinct(StringComparer.Ordinal)], StringComparer.Ordinal);
+
     static IEnumerable<InteractionResult> Evaluate(WizardState state)
     {
         var selected = Features.Selected(state);
@@ -61,7 +80,13 @@ public static class InteractionRules
                     "send-only",
                     Severity.Conflict,
                     ["Send-only", .. names],
-                    $"A send-only endpoint never receives a message, so {DisplayNames.Join(names)} would do nothing. Remove Send-only, or remove {Them(idle.Count)}.");
+                    $"A send-only endpoint never receives a message, so {DisplayNames.Join(names)} would do nothing. Remove Send-only, or remove {Them(idle.Count)}.")
+                {
+                    Marks = idle
+                        .ToDictionary(_ => _.Id, _ => "Conflicts with Send-only", StringComparer.Ordinal)
+                        .Append(new(Features.SendOnly, $"Conflicts with {Few(names)}"))
+                        .ToDictionary(StringComparer.Ordinal)
+                };
             }
             else if (state is {Flow: Flow.New, Persistence: not null})
             {
@@ -85,7 +110,14 @@ public static class InteractionRules
                         $"needs-{requiredId.ToLowerInvariant()}",
                         Severity.Conflict,
                         [feature.DisplayName, required.DisplayName],
-                        $"{feature.DisplayName} configures {required.DisplayName}, so {required.DisplayName} has to be selected too.");
+                        $"{feature.DisplayName} configures {required.DisplayName}, so {required.DisplayName} has to be selected too.")
+                    {
+                        Marks = new Dictionary<string, string>(StringComparer.Ordinal)
+                        {
+                            [feature.Id] = $"Needs {required.DisplayName}",
+                            [requiredId] = $"Needed by {feature.DisplayName}"
+                        }
+                    };
                     continue;
                 }
 
@@ -100,11 +132,20 @@ public static class InteractionRules
         if (state.Has(Features.AttachmentsSql) &&
             state.Has(Features.AttachmentsFileShare))
         {
+            var sql = Features.ById[Features.AttachmentsSql];
+            var fileShare = Features.ById[Features.AttachmentsFileShare];
             yield return new(
                 "attachments-storage",
                 Severity.Conflict,
-                Names(selected.Where(_ => _.Category == FeatureCategory.Attachments)),
-                "Both attachment packages define the same `Attachments()` extension methods, so a project that references both does not compile. Choose one place to keep attachments.");
+                [sql.DisplayName, fileShare.DisplayName],
+                "Both attachment packages define the same `Attachments()` extension methods, so a project that references both does not compile. Choose one place to keep attachments.")
+            {
+                Marks = new Dictionary<string, string>(StringComparer.Ordinal)
+                {
+                    [sql.Id] = $"Conflicts with {fileShare.DisplayName}",
+                    [fileShare.Id] = $"Conflicts with {sql.DisplayName}"
+                }
+            };
         }
 
         if (state.Has(Features.Outbox) &&
@@ -193,6 +234,17 @@ public static class InteractionRules
 
     static IReadOnlyList<string> Names(IEnumerable<FeatureDefinition> features) =>
         [.. features.Select(_ => _.DisplayName)];
+
+    /// <summary>The names when there are one or two; otherwise how many, since a card's badge has no room for a list.</summary>
+    static string Few(IReadOnlyList<string> names)
+    {
+        if (names.Count > 2)
+        {
+            return $"{names.Count} features";
+        }
+
+        return DisplayNames.Join(names);
+    }
 
     static string Them(int count) =>
         Verb(count, "it", "them");

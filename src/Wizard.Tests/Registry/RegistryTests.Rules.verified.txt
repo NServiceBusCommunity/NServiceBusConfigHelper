@@ -1,6 +1,6 @@
 ﻿{
   both attachment stores: [
-    Conflict attachments-storage [SQL attachments, File share attachments] Both attachment packages define the same `Attachments()` extension methods, so a project that references both does not compile. Choose one place to keep attachments.,
+    Conflict attachments-storage [SQL attachments, File share attachments] Both attachment packages define the same `Attachments()` extension methods, so a project that references both does not compile. Choose one place to keep attachments. Cards: AttachmentsFileShare = Conflicts with SQL attachments; AttachmentsSql = Conflicts with File share attachments,
     Info community-backing [SQL attachments, File share attachments] SQL attachments and File share attachments are NServiceBus Community extensions: MIT licensed, and developers who use them are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).,
     Info development-only [Learning transport, Learning persistence] The Learning transport and Learning persistence are for development. Choose a production one before deploying.
   ],
@@ -19,8 +19,8 @@
     Info community-backing [Audit filter] Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).
   ],
   requirements missing, new: [
-    Conflict needs-auditing [Audit filter, Auditing] Audit filter configures Auditing, so Auditing has to be selected too.,
-    Conflict needs-sagas [Saga audit, Sagas] Saga audit configures Sagas, so Sagas has to be selected too.,
+    Conflict needs-auditing [Audit filter, Auditing] Audit filter configures Auditing, so Auditing has to be selected too. Cards: AuditFilter = Needs Auditing; Auditing = Needed by Audit filter,
+    Conflict needs-sagas [Saga audit, Sagas] Saga audit configures Sagas, so Sagas has to be selected too. Cards: SagaAudit = Needs Sagas; Sagas = Needed by Saga audit,
     Warning service-control [Saga audit] Saga audit sends to ServiceControl's queues. Until [ServiceControl](https://docs.particular.net/servicecontrol/) has been installed and has created them, those messages have nowhere to go.,
     Info community-backing [Audit filter] Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).,
     Info development-only [Learning transport, Learning persistence] The Learning transport and Learning persistence are for development. Choose a production one before deploying.
@@ -30,7 +30,7 @@
     Info send-only-persistence [Send-only] A send-only endpoint has no sagas, no outbox and no subscriptions, so it stores nothing: the generated endpoint configures no persistence.
   ],
   send-only with receiving features: [
-    Conflict send-only [Send-only, Sagas, Auditing] A send-only endpoint never receives a message, so Sagas and Auditing would do nothing. Remove Send-only, or remove them.,
+    Conflict send-only [Send-only, Sagas, Auditing] A send-only endpoint never receives a message, so Sagas and Auditing would do nothing. Remove Send-only, or remove them. Cards: Auditing = Conflicts with Send-only; Sagas = Conflicts with Send-only; SendOnly = Conflicts with Sagas and Auditing,
     Info development-only [Learning transport] The Learning transport is for development. Choose a production one before deploying.
   ]
 }

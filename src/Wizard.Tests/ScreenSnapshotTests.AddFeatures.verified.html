@@ -67,27 +67,6 @@
               <input type="text" id="featureFilter" placeholder="Name or description">
               <span class="selected-count">1 selected</span>
             </div>
-            <div class="interactions">
-              <div class="interaction-notice warning" data-rule="needs-auditing">
-                <p class="interaction-heading">
-                  <span class="severity">Needs something else</span>
-                  <span class="involved">Audit filter, Auditing</span>
-                </p>
-                <div class="markdown">
-                  <p>Audit filter configures Auditing. If the endpoint does not have it yet, select it here as well.</p>
-                </div>
-              </div>
-              <div class="interaction-notice info" data-rule="community-backing">
-                <p class="interaction-heading">
-                  <span class="severity">Worth knowing</span>
-                  <span class="involved">Audit filter</span>
-                </p>
-                <div class="markdown">
-                  <p>Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to
-                    <a href="https://github.com/NServiceBusCommunity/Home#community-backed">become patrons</a>.</p>
-                </div>
-              </div>
-            </div>
             <section class="feature-category">
               <h3>Messaging</h3>
               <div class="feature-cards">
@@ -118,7 +97,7 @@
                     <span class="feature-name">Handler ordering</span>
                     <span class="feature-description">When several handlers take the same message, each says which handlers it runs after, and the order is worked out at startup.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -159,7 +138,7 @@
                     <span class="feature-name">Audit filter</span>
                     <span class="feature-description">Chooses which message types go to the audit queue, with an attribute on the message or a default for the rest.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -169,7 +148,7 @@
                     <span class="feature-name">Heartbeats</span>
                     <span class="feature-description">Tells ServiceControl at a regular interval that the endpoint is alive, so ServicePulse can show when it stops.</span>
                     <span class="badges">
-                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                      <span class="badge " title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
                     </span>
                   </span>
                 </label>
@@ -179,7 +158,7 @@
                     <span class="feature-name">Custom checks</span>
                     <span class="feature-description">Reports the result of health checks written for this endpoint to ServiceControl: a sample check of free disk space.</span>
                     <span class="badges">
-                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                      <span class="badge " title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
                     </span>
                   </span>
                 </label>
@@ -189,7 +168,7 @@
                     <span class="feature-name">Performance metrics</span>
                     <span class="feature-description">Sends processing time, queue length and throughput to a ServiceControl monitoring instance, for ServicePulse's monitoring view.</span>
                     <span class="badges">
-                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                      <span class="badge " title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
                     </span>
                   </span>
                 </label>
@@ -199,7 +178,7 @@
                     <span class="feature-name">Saga audit</span>
                     <span class="feature-description">Sends every saga state change to ServiceControl, so the history of a saga can be followed.</span>
                     <span class="badges">
-                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                      <span class="badge " title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
                     </span>
                   </span>
                 </label>
@@ -221,7 +200,7 @@
                     <span class="feature-name">Serilog</span>
                     <span class="feature-description">Logs through Serilog, with NServiceBus exception details as structured properties, and a log event for each message handled and sent.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -236,7 +215,7 @@
                     <span class="feature-name">FluentValidation</span>
                     <span class="feature-description">Validates messages with FluentValidation as they are received and sent: a sample validator for the sample command.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -246,7 +225,7 @@
                     <span class="feature-name">DataAnnotations</span>
                     <span class="feature-description">Validates messages with the attributes in System.ComponentModel.DataAnnotations as they are received and sent.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -261,7 +240,7 @@
                     <span class="feature-name">SQL attachments</span>
                     <span class="feature-description">The claim check pattern on SQL Server: large content travels beside the message in a table, and is streamed when a handler asks for it.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
@@ -271,12 +250,33 @@
                     <span class="feature-name">File share attachments</span>
                     <span class="feature-description">The claim check pattern on a directory: large content travels beside the message as a file every endpoint can reach.</span>
                     <span class="badges">
-                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                      <span class="badge " title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
                     </span>
                   </span>
                 </label>
               </div>
             </section>
+            <div class="interactions" id="feature-notices">
+              <div class="interaction-notice warning" data-rule="needs-auditing">
+                <p class="interaction-heading">
+                  <span class="severity">Needs something else</span>
+                  <span class="involved">Audit filter, Auditing</span>
+                </p>
+                <div class="markdown">
+                  <p>Audit filter configures Auditing. If the endpoint does not have it yet, select it here as well.</p>
+                </div>
+              </div>
+              <div class="interaction-notice info" data-rule="community-backing">
+                <p class="interaction-heading">
+                  <span class="severity">Worth knowing</span>
+                  <span class="involved">Audit filter</span>
+                </p>
+                <div class="markdown">
+                  <p>Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to
+                    <a href="https://github.com/NServiceBusCommunity/Home#community-backed">become patrons</a>.</p>
+                </div>
+              </div>
+            </div>
             <div class="wizard-nav">
               <button type="button" class="back">Back</button>
               <button type="button" class="primary">Next: Options</button>

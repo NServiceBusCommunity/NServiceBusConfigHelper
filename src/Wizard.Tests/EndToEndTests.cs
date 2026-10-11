@@ -73,6 +73,27 @@ public class EndToEndTests
     }
 
     /// <summary>
+    /// The notices are below a long list of cards. The count beside the filter is there for a conflict
+    /// whose notice is out of sight, and brings it into view.
+    /// </summary>
+    [Test]
+    public async Task TheConflictCountJumpsToTheNotices()
+    {
+        var page = await ScreenSnapshotTests.Open(
+            "/new?step=features&host=Worker&transport=Learning&persistence=NonDurable&serializer=SystemJson&tests=None&features=SendOnly,Sagas",
+            ".conflict-count");
+
+        var notice = page.Locator(".interaction-notice[data-rule=send-only]");
+        await Assertions.Expect(notice).Not.ToBeInViewportAsync();
+        // the cards say it without scrolling
+        await Assertions.Expect(page.Locator(".feature-card.conflict[data-id=Sagas] .badge.conflict")).ToBeInViewportAsync();
+
+        await page.ClickAsync(".conflict-count");
+        await Assertions.Expect(notice).ToBeInViewportAsync();
+        await Assert.That(page.Url).Contains("/new?step=features&");
+    }
+
+    /// <summary>
     /// An extension readme's deep link, in a browser that remembers what the endpoint runs on: the
     /// first two steps are already answered, and the download is the changes to merge.
     /// </summary>

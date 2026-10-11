@@ -171,7 +171,47 @@ public class RegistryTests
         return Verify(
             states.ToDictionary(
                 _ => _.Key,
-                _ => InteractionRules.For(_.Value).Select(result => $"{result.Severity} {result.RuleId} [{string.Join(", ", result.Involved)}] {result.Message}")));
+                _ => InteractionRules.For(_.Value).Select(result => $"{result.Severity} {result.RuleId} [{string.Join(", ", result.Involved)}] {result.Message}{Marks(result)}")));
+    }
+
+    static string Marks(InteractionResult result)
+    {
+        if (result.Marks.Count == 0)
+        {
+            return "";
+        }
+
+        return $" Cards: {string.Join("; ", result.Marks.OrderBy(_ => _.Key, StringComparer.Ordinal).Select(_ => $"{_.Key} = {_.Value}"))}";
+    }
+
+    /// <summary>A conflict marks every card it is about, and only a conflict does.</summary>
+    [Test]
+    public async Task OnlyConflictsMarkCards()
+    {
+        var blocked = GeneratorTests.WithFeatures(GeneratorTests.State(), "SendOnly", "Sagas", "Auditing", "Recoverability", "AuditFilter", "Heartbeats");
+        var results = InteractionRules.For(blocked);
+        await Assert.That(results.Where(_ => _.Severity != Severity.Conflict).SelectMany(_ => _.Marks)).IsEmpty();
+        await Assert.That(results.Where(_ => _.Severity == Severity.Conflict && _.Marks.Count == 0)).IsEmpty();
+
+        var marks = InteractionRules.Marks(results);
+        // a badge has no room for a list of four
+        await Assert.That(marks["SendOnly"]).IsEquivalentTo(["Conflicts with 4 features"]);
+        await Assert.That(marks["Sagas"]).IsEquivalentTo(["Conflicts with Send-only"]);
+        await Assert.That(marks.ContainsKey("Heartbeats")).IsFalse();
+
+        // when adding, a missing requirement is a warning, and marks nothing
+        var added = GeneratorTests.Addition(Transport.RabbitMQ, Persistence.MongoDb, "AuditFilter");
+        await Assert.That(InteractionRules.Marks(InteractionRules.For(added))).IsEmpty();
+    }
+
+    /// <summary>A feature two others need says so for each of them.</summary>
+    [Test]
+    public async Task ARequiredFeatureIsMarkedThoughNotSelected()
+    {
+        var state = GeneratorTests.WithFeatures(GeneratorTests.State(), "AuditFilter");
+        var marks = InteractionRules.Marks(InteractionRules.For(state));
+        await Assert.That(marks["AuditFilter"]).IsEquivalentTo(["Needs Auditing"]);
+        await Assert.That(marks["Auditing"]).IsEquivalentTo(["Needed by Audit filter"]);
     }
 
     /// <summary>The outbox is greyed out, with the reason, on a persistence that cannot store it.</summary>

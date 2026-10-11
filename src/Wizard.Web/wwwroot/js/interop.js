@@ -44,6 +44,15 @@ window.nserviceBusWizard = {
         }
     },
 
+    // Brings an element of the current step into view. A fragment link would do it, but with a
+    // <base href> a fragment resolves against the base, and navigates away from the step.
+    scrollIntoView: function (id) {
+        const element = document.getElementById(id);
+        if (element) {
+            element.scrollIntoView({block: 'center'});
+        }
+    },
+
     // Saves bytes from .NET (a DotNetStreamReference, which avoids base64 for larger zips) as a file.
     downloadFile: async function (fileName, contentType, streamReference) {
         const buffer = await streamReference.arrayBuffer();

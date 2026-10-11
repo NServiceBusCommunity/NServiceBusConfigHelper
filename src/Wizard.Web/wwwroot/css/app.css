@@ -51,6 +51,8 @@
     --accent: #1f883d;
     --warn-bg: #fff8c5;
     --warn-border: #d4a72c;
+    --danger: #cf222e;
+    --danger-bg: #ffebe9;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -67,6 +69,8 @@
         --accent: #3fb950;
         --warn-bg: #3a2d12;
         --warn-border: #9e6a03;
+        --danger: #f85149;
+        --danger-bg: #4c1519;
     }
 }
 
@@ -758,6 +762,13 @@ pre.ai-markdown {
     box-shadow: inset 3px 0 0 var(--accent);
 }
 
+/* Part of a conflict, selected or not. After .selected, so the red edge wins on a selected card. */
+.feature-card.conflict,
+.feature-card.conflict:hover {
+    border-color: var(--danger);
+    box-shadow: inset 3px 0 0 var(--danger);
+}
+
 .feature-card input {
     margin-top: .2rem;
 }
@@ -794,6 +805,19 @@ pre.ai-markdown {
     color: var(--text);
 }
 
+.badge.conflict {
+    border-color: var(--danger);
+    background: var(--danger-bg);
+    font-weight: 600;
+}
+
+/* Beside the filter: how many conflicts there are, and a way down to the notices that explain them. */
+.link-button.conflict-count {
+    color: var(--danger);
+    font-size: .9rem;
+    font-weight: 600;
+}
+
 /* interaction notices */
 .interactions {
     display: flex;
@@ -811,7 +835,7 @@ pre.ai-markdown {
 }
 
 .interaction-notice.conflict {
-    border-left-color: #cf222e;
+    border-left-color: var(--danger);
 }
 
 .interaction-notice.warning {

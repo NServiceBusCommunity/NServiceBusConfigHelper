@@ -1,5 +1,7 @@
 @* One selectable feature. The whole card is the checkbox's label, so clicking anywhere toggles it.
-   Badges say up front what selecting it brings: a community extension, a need for ServiceControl. *@
+   Badges say up front what selecting it brings: a community extension, a need for ServiceControl.
+   A card that is part of a conflict says so itself, because the notice explaining it is at the end of
+   the list and the click that caused it was here. *@
 <label class="feature-card @CardClass" data-id="@Definition.Id" title="@Unavailable">
     <input type="checkbox"
            checked="@Selected"
@@ -13,7 +15,7 @@
             <span class="badges">
                 @foreach (var badge in Badges)
                 {
-                    <span class="badge" title="@badge.Hint">@badge.Label</span>
+                    <span class="badge @badge.Class" title="@badge.Hint">@badge.Label</span>
                 }
             </span>
         }
@@ -28,6 +30,12 @@
     /// <summary>Why it cannot be selected with the answers so far; the card is greyed out and says so on hover.</summary>
     [Parameter] public string? Unavailable { get; set; }
 
+    /// <summary>
+    /// What the card says about each conflict it is part of. Not only for a selected card: selecting
+    /// this one can be what resolves a conflict, and then it says which feature needs it.
+    /// </summary>
+    [Parameter] public IReadOnlyList<string> Conflicts { get; set; } = [];
+
     string CardClass
     {
         get
@@ -37,22 +45,29 @@
                 return "unavailable";
             }
 
+            var classes = new List<string>();
             if (Selected)
             {
-                return "selected";
+                classes.Add("selected");
             }
 
-            return "";
+            if (Conflicts.Count > 0)
+            {
+                classes.Add("conflict");
+            }
+
+            return string.Join(' ', classes);
         }
     }
 
-    record Badge(string Label, string Hint);
+    record Badge(string Label, string Hint, string Class = "");
 
     IReadOnlyList<Badge> Badges
     {
         get
         {
             var badges = new List<Badge>();
+            badges.AddRange(Conflicts.Select(_ => new Badge(_, "Explained at the end of the list. The step cannot be left until it is resolved.", "conflict")));
             if (Unavailable != null)
             {
                 badges.Add(new("Not available", Unavailable));

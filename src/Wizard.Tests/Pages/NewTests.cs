@@ -137,12 +137,60 @@ public class NewTests : WebTestContext
         await Assert.That(page.Find("button.primary").HasAttribute("disabled")).IsFalse();
     }
 
+    /// <summary>
+    /// The notice is at the end of a long list, so the conflict also shows where it was caused: on
+    /// both cards, and as a count beside the filter that jumps to the notices.
+    /// </summary>
+    [Test]
+    public async Task AConflictIsMarkedOnTheCardsInvolved()
+    {
+        var page = Open($"new?step=features&{stack}&features=SendOnly,Sagas");
+        await Assert.That(page.Find(".feature-card.conflict[data-id=SendOnly] .badge.conflict").TextContent).IsEqualTo("Conflicts with Sagas");
+        await Assert.That(page.Find(".feature-card.conflict[data-id=Sagas] .badge.conflict").TextContent).IsEqualTo("Conflicts with Send-only");
+        await Assert.That(page.FindAll(".feature-card.conflict").Count).IsEqualTo(2);
+        await Assert.That(page.Find(".conflict-count").TextContent).IsEqualTo("1 has to change");
+
+        await page.Find(".conflict-count").ClickAsync(new());
+        var scrolled = JSInterop.Invocations.Single(_ => _.Identifier == "nserviceBusWizard.scrollIntoView");
+        await Assert.That(page.Find($"#{scrolled.Arguments[0]}").ClassList.Contains("interactions")).IsTrue();
+
+        await page.Find(".feature-card[data-id=Sagas] input").ChangeAsync(new() {Value = false});
+        await Assert.That(page.FindAll(".feature-card.conflict")).IsEmpty();
+        await Assert.That(page.FindAll(".conflict-count")).IsEmpty();
+    }
+
+    /// <summary>What is not a conflict stays a notice only: the count and the red cards mean Next is held back.</summary>
+    [Test]
+    public async Task WarningsDoNotMarkCards()
+    {
+        var page = Open($"new?step=features&{stack}&features=Heartbeats,Serilog");
+        await Assert.That(page.FindAll(".interaction-notice").Count).IsEqualTo(2);
+        await Assert.That(page.FindAll(".feature-card.conflict")).IsEmpty();
+        await Assert.That(page.FindAll(".conflict-count")).IsEmpty();
+    }
+
+    /// <summary>The card to select to resolve a conflict stays in view whatever the filter says.</summary>
+    [Test]
+    public async Task TheFilterKeepsMarkedCards()
+    {
+        var page = Open($"new?step=features&{stack}&features=AuditFilter");
+        await page.Find("#featureFilter").InputAsync(new() {Value = "serilog"});
+
+        var shown = page.FindAll(".feature-card").Select(_ => _.GetAttribute("data-id")!);
+        await Assert.That(shown).IsEquivalentTo(["Auditing", "AuditFilter", "Serilog"]);
+    }
+
     /// <summary>A feature that configures another needs it selected.</summary>
     [Test]
     public async Task ARequiredFeatureBlocksNextUntilSelected()
     {
         var page = Open($"new?step=features&{stack}&features=AuditFilter");
         await Assert.That(page.Find("button.primary").HasAttribute("disabled")).IsTrue();
+        // the card that resolves it is marked though it is not selected
+        var needed = page.Find(".feature-card.conflict[data-id=Auditing]");
+        await Assert.That(needed.ClassList.Contains("selected")).IsFalse();
+        await Assert.That(needed.QuerySelector(".badge.conflict")!.TextContent).IsEqualTo("Needed by Audit filter");
+        await Assert.That(page.Find(".feature-card[data-id=AuditFilter] .badge.conflict").TextContent).IsEqualTo("Needs Auditing");
 
         await page.Find(".feature-card[data-id=Auditing] input").ChangeAsync(new() {Value = true});
         await Assert.That(page.FindAll(".interaction-notice[data-rule=needs-auditing]")).IsEmpty();

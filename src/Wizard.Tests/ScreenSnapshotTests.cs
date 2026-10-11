@@ -87,14 +87,14 @@ public class ScreenSnapshotTests
         await VerifyScreen(page);
     }
 
-    /// <summary>A selection, with the notices it raises above the cards.</summary>
+    /// <summary>A selection, with the notices it raises below the cards.</summary>
     [Test]
     public async Task NewFeaturesWithNotices()
     {
         var page = await Open(
             $"/new?step=features&{stack}&features=Sagas,Outbox,Heartbeats,Serilog",
             ".interaction-notice[data-rule=community-backing]");
-        await VerifyScreen(page, fullPage: false);
+        await VerifyScreen(page);
     }
 
     /// <summary>A conflict, which is what stops the step being left.</summary>
@@ -104,7 +104,7 @@ public class ScreenSnapshotTests
         var page = await Open(
             $"/new?step=features&{stack}&features=SendOnly,Sagas",
             ".interaction-notice.conflict");
-        await VerifyScreen(page, fullPage: false);
+        await VerifyScreen(page);
     }
 
     /// <summary>A feature the persistence rules out is greyed out.</summary>
@@ -159,7 +159,7 @@ public class ScreenSnapshotTests
         var page = await Open(
             "/add?step=features&transport=RabbitMQ&persistence=MongoDb&features=AuditFilter",
             ".interaction-notice[data-rule=needs-auditing]");
-        await VerifyScreen(page, fullPage: false);
+        await VerifyScreen(page);
     }
 
     [Test]

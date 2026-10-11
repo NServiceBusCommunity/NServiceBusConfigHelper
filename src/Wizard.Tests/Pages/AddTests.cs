@@ -81,6 +81,8 @@ public class AddTests : WebTestContext
         var page = Open("add?step=features&transport=Learning&persistence=NonDurable&features=AuditFilter");
         await Assert.That(page.Find(".interaction-notice.warning[data-rule=needs-auditing]").TextContent).Contains("If the endpoint does not have it yet");
         await Assert.That(page.Find("button.primary").HasAttribute("disabled")).IsFalse();
+        await Assert.That(page.FindAll(".feature-card.conflict")).IsEmpty();
+        await Assert.That(page.FindAll(".conflict-count")).IsEmpty();
     }
 
     /// <summary>The download is the changes to merge, and says so.</summary>

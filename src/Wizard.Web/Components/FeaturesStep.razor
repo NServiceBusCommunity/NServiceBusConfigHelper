@@ -1,5 +1,9 @@
+@inject IJSRuntime JS
+
 @* The feature picker, grouped by category so a long list stays navigable. Every notice the selection
-   raises appears above the cards as soon as the combination exists, rather than at the end. *@
+   raises appears below the cards, next to the button it may be holding back. That is a long way from
+   a card near the top, so a conflict also shows where it was caused: on the cards involved, and as a
+   count beside the filter that jumps to the notices. *@
 @if (State.Flow == Flow.Add)
 {
     <p class="hint">Choose what to add to the endpoint. At least one is needed. @Features.All.Count are available.</p>
@@ -17,17 +21,11 @@ else
            value="@filter"
            @oninput="FilterChanged" />
     <span class="selected-count">@State.SelectedFeatures.Count selected</span>
+    @if (conflicts > 0)
+    {
+        <button type="button" class="link-button conflict-count" @onclick="ShowNotices">@ConflictCount</button>
+    }
 </div>
-
-@if (interactions.Count > 0)
-{
-    <div class="interactions">
-        @foreach (var interaction in interactions)
-        {
-            <InteractionNotice Result="interaction" />
-        }
-    </div>
-}
 
 @foreach (var category in Categories)
 {
@@ -39,10 +37,21 @@ else
                 <FeatureCard Definition="definition"
                              Selected="State.Has(definition.Id)"
                              Unavailable="@State.Unavailable(definition.Id)"
+                             Conflicts="@marks.GetValueOrDefault(definition.Id, [])"
                              SelectedChanged="_ => Toggle(definition.Id, _)" />
             }
         </div>
     </section>
+}
+
+@if (interactions.Count > 0)
+{
+    <div class="interactions" id="@noticesId">
+        @foreach (var interaction in interactions)
+        {
+            <InteractionNotice Result="interaction" />
+        }
+    </div>
 }
 
 @code {
@@ -51,11 +60,35 @@ else
 
     string filter = "";
 
+    const string noticesId = "feature-notices";
+
     IReadOnlyList<InteractionResult> interactions = [];
+    IReadOnlyDictionary<string, IReadOnlyList<string>> marks = new Dictionary<string, IReadOnlyList<string>>();
+    int conflicts;
 
     // What is about the transport or the persistence alone belongs on the options step.
-    protected override void OnParametersSet() =>
+    protected override void OnParametersSet()
+    {
         interactions = [.. InteractionRules.For(State).Where(_ => !_.Stack)];
+        marks = InteractionRules.Marks(interactions);
+        conflicts = interactions.Count(_ => _.Severity == Severity.Conflict);
+    }
+
+    string ConflictCount
+    {
+        get
+        {
+            if (conflicts == 1)
+            {
+                return "1 has to change";
+            }
+
+            return $"{conflicts} have to change";
+        }
+    }
+
+    Task ShowNotices() =>
+        JS.InvokeVoidAsync("nserviceBusWizard.scrollIntoView", noticesId).AsTask();
 
     IEnumerable<IGrouping<FeatureCategory, FeatureDefinition>> Categories =>
         Features.All
@@ -71,7 +104,9 @@ else
         }
 
         // A selected feature stays visible whatever the filter says, so it cannot be lost from view.
-        if (State.Has(definition.Id))
+        // So does one that is part of a conflict: it may be the one to select.
+        if (State.Has(definition.Id) ||
+            marks.ContainsKey(definition.Id))
         {
             return true;
         }
