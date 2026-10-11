@@ -1,0 +1,96 @@
+<PageTitle>@State.Flow.Name() · NServiceBus Wizard</PageTitle>
+
+@* Nothing renders until the url has been read and the browser's memory applied, so a restored
+   answer never flashes in after the page has drawn without it. *@
+@if (ready)
+{
+    <div class="wizard-layout">
+        <Breadcrumb State="State" Steps="Steps" StepSelected="GoTo" />
+
+        <section class="step-body" data-step="@State.Step">
+            <div class="step-heading">
+                <h2>@Current.Title</h2>
+                @* The feature list is long, so Skip sits at the top where it needs no scroll. *@
+                @if (State is {Step: "features", Flow: Flow.New} &&
+                     NextStep is { } skipTo)
+                {
+                    <button type="button" class="skip" @onclick="() => Skip(skipTo.Id)">Skip</button>
+                }
+            </div>
+
+            @switch (State.Step)
+            {
+                case "host":
+                    <p class="hint">What runs the endpoint. Both are the .NET generic host, so the endpoint starts and stops with the application.</p>
+                    <ChoiceCards TValue="Hosting" Options="hostingChoices" Value="State.Hosting" ValueChanged="_ => SetAndAdvance(State.Hosting == null, wizard => wizard.Hosting = _)" IdPrefix="host" Label="Hosting" />
+                    break;
+                case "transport":
+                    @if (State.Flow == Flow.Add)
+                    {
+                        <p class="hint">The transport the endpoint already uses. It decides what some features' code refers to.</p>
+                    }
+                    else
+                    {
+                        <p class="hint">How messages get from one endpoint to another. Every endpoint in a system uses the same one.</p>
+                    }
+                    @if (restored.Transport)
+                    {
+                        <p class="restored">Restored from this browser.</p>
+                    }
+                    <ChoiceCards TValue="Transport" Options="transportChoices" Value="State.Transport" ValueChanged="_ => SetAndAdvance(State.Transport == null, wizard => wizard.Transport = _)" IdPrefix="transport" Label="Transport" />
+                    break;
+                case "persistence":
+                    @if (State.Flow == Flow.Add)
+                    {
+                        <p class="hint">The persistence the endpoint already uses. It decides which features are available.</p>
+                    }
+                    else
+                    {
+                        <p class="hint">Where sagas, the outbox and subscriptions are stored. It is chosen per endpoint, and usually follows where the endpoint keeps its own data.</p>
+                    }
+                    @if (restored.Persistence)
+                    {
+                        <p class="restored">Restored from this browser.</p>
+                    }
+                    <ChoiceCards TValue="Persistence" Options="PersistenceChoices" Value="State.Persistence" ValueChanged="_ => SetAndAdvance(State.Persistence == null, wizard => wizard.Persistence = _)" IdPrefix="persistence" Label="Persistence" />
+                    break;
+                case "serializer":
+                    <p class="hint">How a message body is written. Endpoints that exchange messages have to be able to read each other's.</p>
+                    <ChoiceCards TValue="Serializer" Options="serializerChoices" Value="State.Serializer" ValueChanged="_ => SetAndAdvance(State.Serializer == null, wizard => wizard.Serializer = _)" IdPrefix="serializer" Label="Serializer" />
+                    break;
+                case "tests":
+                    <p class="hint">A test project using NServiceBus.Testing, whose fakes record what a handler sends and publishes.</p>
+                    <ChoiceCards TValue="TestFramework" Options="testFrameworkChoices" Value="State.TestFramework" ValueChanged="_ => SetAndAdvance(State.TestFramework == null, wizard => wizard.TestFramework = _)" IdPrefix="tests" Label="Tests" />
+                    break;
+                case "features":
+                    <FeaturesStep State="State" Changed="Changed" />
+                    break;
+                case "options":
+                    <OptionsStep State="State" Changed="Changed" />
+                    break;
+                default:
+                    <OutputStep State="State" Today="today" Changed="Changed" />
+                    break;
+            }
+
+            <div class="wizard-nav">
+                @if (PreviousStep is { } previous)
+                {
+                    <button type="button" class="back" @onclick="() => GoTo(previous.Id)">Back</button>
+                }
+                else
+                {
+                    <a class="back" href="">Home</a>
+                }
+
+                @if (NextStep is { } next)
+                {
+                    <button type="button"
+                            class="primary"
+                            disabled="@(!Current.IsComplete(State))"
+                            @onclick="() => GoTo(next.Id)">Next: @next.Title</button>
+                }
+            </div>
+        </section>
+    </div>
+}

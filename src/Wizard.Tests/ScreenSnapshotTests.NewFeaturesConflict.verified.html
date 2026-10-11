@@ -1,0 +1,306 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="serializer">
+                  <span class="step-title">Serializer</span>
+                  <span class="step-value">System.Text.Json</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="tests">
+                  <span class="step-title">Tests</span>
+                  <span class="step-value">xUnit v3</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Features</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Options</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="features">
+            <div class="step-heading">
+              <h2>Features</h2>
+              <button type="button" class="skip">Skip</button>
+            </div>
+            <p class="hint">Nothing here is required, and anything chosen can be deleted from what is generated later. 18 are available.</p>
+            <div class="feature-search">
+              <label for="featureFilter">Filter</label>
+              <input type="text" id="featureFilter" placeholder="Name or description">
+              <span class="selected-count">2 selected</span>
+            </div>
+            <div class="interactions">
+              <div class="interaction-notice conflict" data-rule="send-only">
+                <p class="interaction-heading">
+                  <span class="severity">Has to change</span>
+                  <span class="involved">Send-only, Sagas</span>
+                </p>
+                <div class="markdown">
+                  <p>A send-only endpoint never receives a message, so Sagas would do nothing. Remove Send-only, or remove it.</p>
+                </div>
+              </div>
+            </div>
+            <section class="feature-category">
+              <h3>Messaging</h3>
+              <div class="feature-cards">
+                <label class="feature-card selected" data-id="SendOnly">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Send-only</span>
+                    <span class="feature-description">The endpoint sends and publishes but never receives: no input queue, no handlers. Typical for a web front end.</span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="Conventions">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Message conventions</span>
+                    <span class="feature-description">Commands and events are recognised by namespace, so message classes need no NServiceBus interface or reference.</span>
+                  </span>
+                </label>
+                <label class="feature-card selected" data-id="Sagas">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Sagas</span>
+                    <span class="feature-description">A long-running process with its own state: a sample saga that is started by an event and completes on a timeout.</span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="HandlerOrdering">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Handler ordering</span>
+                    <span class="feature-description">When several handlers take the same message, each says which handlers it runs after, and the order is worked out at startup.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <section class="feature-category">
+              <h3>Reliability</h3>
+              <div class="feature-cards">
+                <label class="feature-card " data-id="Recoverability">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Retry policy</span>
+                    <span class="feature-description">Sets how many times a failing message is retried, immediately and then with a delay, before it goes to the error queue.</span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="Outbox">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Outbox</span>
+                    <span class="feature-description">Stores a handler's outgoing messages with its data in one transaction, so a redelivered message is neither processed nor sent twice.</span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <section class="feature-category">
+              <h3>Auditing and monitoring</h3>
+              <div class="feature-cards">
+                <label class="feature-card " data-id="Auditing">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Auditing</span>
+                    <span class="feature-description">Copies every successfully processed message to an audit queue, which ServiceControl reads to show message flows.</span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="AuditFilter">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Audit filter</span>
+                    <span class="feature-description">Chooses which message types go to the audit queue, with an attribute on the message or a default for the rest.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="Heartbeats">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Heartbeats</span>
+                    <span class="feature-description">Tells ServiceControl at a regular interval that the endpoint is alive, so ServicePulse can show when it stops.</span>
+                    <span class="badges">
+                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="CustomChecks">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Custom checks</span>
+                    <span class="feature-description">Reports the result of health checks written for this endpoint to ServiceControl: a sample check of free disk space.</span>
+                    <span class="badges">
+                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="Metrics">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Performance metrics</span>
+                    <span class="feature-description">Sends processing time, queue length and throughput to a ServiceControl monitoring instance, for ServicePulse's monitoring view.</span>
+                    <span class="badges">
+                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="SagaAudit">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Saga audit</span>
+                    <span class="feature-description">Sends every saga state change to ServiceControl, so the history of a saga can be followed.</span>
+                    <span class="badges">
+                      <span class="badge" title="Sends to queues that ServiceControl creates.">Needs ServiceControl</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <section class="feature-category">
+              <h3>Logging and telemetry</h3>
+              <div class="feature-cards">
+                <label class="feature-card " data-id="OpenTelemetry">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">OpenTelemetry</span>
+                    <span class="feature-description">Exports NServiceBus traces and metrics over OTLP, so a message can be followed across endpoints in any OpenTelemetry backend.</span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="Serilog">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">Serilog</span>
+                    <span class="feature-description">Logs through Serilog, with NServiceBus exception details as structured properties, and a log event for each message handled and sent.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <section class="feature-category">
+              <h3>Validation</h3>
+              <div class="feature-cards">
+                <label class="feature-card " data-id="FluentValidation">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">FluentValidation</span>
+                    <span class="feature-description">Validates messages with FluentValidation as they are received and sent: a sample validator for the sample command.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="DataAnnotations">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">DataAnnotations</span>
+                    <span class="feature-description">Validates messages with the attributes in System.ComponentModel.DataAnnotations as they are received and sent.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <section class="feature-category">
+              <h3>Attachments</h3>
+              <div class="feature-cards">
+                <label class="feature-card " data-id="AttachmentsSql">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">SQL attachments</span>
+                    <span class="feature-description">The claim check pattern on SQL Server: large content travels beside the message in a table, and is streamed when a handler asks for it.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+                <label class="feature-card " data-id="AttachmentsFileShare">
+                  <input type="checkbox">
+                  <span class="feature-body">
+                    <span class="feature-name">File share attachments</span>
+                    <span class="feature-description">The claim check pattern on a directory: large content travels beside the message as a file every endpoint can reach.</span>
+                    <span class="badges">
+                      <span class="badge" title="An NServiceBus Community extension. Developers who use it are expected to become patrons.">Community</span>
+                    </span>
+                  </span>
+                </label>
+              </div>
+            </section>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+              <button type="button" class="primary" disabled="">Next: Options</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

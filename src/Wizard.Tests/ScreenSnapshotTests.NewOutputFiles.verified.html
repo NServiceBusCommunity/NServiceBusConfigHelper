@@ -1,0 +1,294 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="serializer">
+                  <span class="step-title">Serializer</span>
+                  <span class="step-value">System.Text.Json</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="tests">
+                  <span class="step-title">Tests</span>
+                  <span class="step-value">xUnit v3</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="features">
+                  <span class="step-title">Features</span>
+                  <span class="step-value">3 features</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="options">
+                  <span class="step-title">Options</span>
+                  <span class="step-value">Defaults</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="output">
+            <div class="step-heading">
+              <h2>Result</h2>
+            </div>
+            <div class="field">
+              <label for="solutionName">Endpoint name</label>
+              <p class="hint">Used for the solution, the project, the namespace, and the endpoint's queue on the transport.</p>
+              <input type="text" id="solutionName">
+            </div>
+            <p class="hint versions" data-versions="live">Package versions are the newest stable releases on nuget.org.</p>
+            <div class="output-actions">
+              <button type="button" class="primary download-zip">Download solution (.zip)</button>
+              <button type="button" class="copy-guide">Copy guide as markdown</button>
+              <button type="button" class="download-guide">Download guide (.md)</button>
+              <button type="button" class="copy-ai">Copy AI instructions</button>
+              <button type="button" class="download-ai">Download AI instructions (.md)</button>
+              <button type="button" class="copy-link">Copy link to this page</button>
+            </div>
+            <div class="tabs" role="tablist">
+              <button type="button" role="tab" id="tab-Guide" class="tab " aria-selected="false">Guide</button>
+              <button type="button" role="tab" id="tab-Files" class="tab selected" aria-selected="true">Files</button>
+              <button type="button" role="tab" id="tab-AI" class="tab " aria-selected="false">AI</button>
+            </div>
+            <div class="tab-panel" role="tabpanel" aria-labelledby="tab-Files">
+              <div class="file-browser">
+                <div>
+                  <p class="file-root">SampleEndpoint/</p>
+                  <ul class="file-list">
+                    <li>
+                      <button type="button" class="file-link ">global.json</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">Directory.Build.props</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">Directory.Packages.props</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">.gitignore</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">.editorconfig</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">SampleEndpoint.slnx</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">readme.md</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">CLAUDE.md</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">.github/<wbr>copilot-instructions.md</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">docker-compose.yml</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>SampleEndpoint.csproj</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link selected">src/<wbr>SampleEndpoint/<wbr>Program.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>appsettings.json</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Messages/<wbr>PlaceOrder.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>OrderSubmitter.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>SampleOrders.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Messages/<wbr>OrderPlaced.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Handlers/<wbr>PlaceOrderHandler.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Handlers/<wbr>OrderPlacedHandler.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Sagas/<wbr>OrderSaga.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Sagas/<wbr>OrderSagaData.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint/<wbr>Sagas/<wbr>CancellationWindowElapsed.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint.Tests/<wbr>SampleEndpoint.Tests.csproj</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint.Tests/<wbr>OrderSubmitterTests.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint.Tests/<wbr>PlaceOrderHandlerTests.cs</button>
+                    </li>
+                    <li>
+                      <button type="button" class="file-link ">src/<wbr>SampleEndpoint.Tests/<wbr>OrderSagaTests.cs</button>
+                    </li>
+                  </ul>
+                </div>
+                <div class="code-box">
+                  <div class="code-box-header">
+                    <span class="code-box-title">src/SampleEndpoint/Program.cs</span>
+                    <button type="button" class="copy-button">Copy</button>
+                  </div>
+                  <pre class="code-box-content"><code>// Generated by the NServiceBus wizard: https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&amp;host=Worker&amp;transport=RabbitMQ&amp;persistence=PostgreSql&amp;serializer=SystemJson&amp;tests=XunitV3&amp;features=Sagas,Outbox,Serilog
+using Npgsql;
+using NpgsqlTypes;
+using SampleEndpoint;
+using Serilog;
+
+// Serilog: https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog
+var loggerConfiguration = new LoggerConfiguration();
+loggerConfiguration.Enrich.WithNsbExceptionDetails();
+loggerConfiguration.WriteTo.Console();
+Log.Logger = loggerConfiguration.CreateLogger();
+
+var builder = Host.CreateApplicationBuilder(args);
+
+var rabbitMqConnectionString = ConnectionString("RabbitMQ");
+var postgreSqlConnectionString = ConnectionString("PostgreSql");
+
+// Serilog: https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog
+// Serilog takes the place of the host's own providers, so each event is written once.
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog();
+
+var endpointConfiguration = new EndpointConfiguration("SampleEndpoint");
+
+// Transport: RabbitMQ. https://docs.particular.net/transports/rabbitmq/
+var transport = new RabbitMQTransport(
+    RoutingTopology.Conventional(QueueType.Quorum),
+    rabbitMqConnectionString);
+endpointConfiguration.UseTransport(transport);
+
+// Persistence: PostgreSQL. https://docs.particular.net/persistence/sql/
+var persistence = endpointConfiguration.UsePersistence&lt;SqlPersistence&gt;();
+var dialect = persistence.SqlDialect&lt;SqlDialect.PostgreSql&gt;();
+// Saga data is stored as jsonb, which Npgsql has to be told for each parameter.
+dialect.JsonBParameterModifier(parameter =&gt;
+{
+    var npgsqlParameter = (NpgsqlParameter) parameter;
+    npgsqlParameter.NpgsqlDbType = NpgsqlDbType.Jsonb;
+});
+persistence.ConnectionBuilder(() =&gt; new NpgsqlConnection(postgreSqlConnectionString));
+
+// Serializer: System.Text.Json. https://docs.particular.net/nservicebus/serialization/system-json
+endpointConfiguration.UseSerialization&lt;SystemJsonSerializer&gt;();
+
+// Where a message goes once every retry has failed. ServiceControl reads this queue.
+endpointConfiguration.SendFailedMessagesTo("error");
+
+// Outbox: https://docs.particular.net/nservicebus/outbox/
+// The outbox takes over from the transport's transaction, which then only covers the receive.
+transport.TransportTransactionMode = TransportTransactionMode.ReceiveOnly;
+endpointConfiguration.EnableOutbox();
+
+// Serilog: https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog
+var serilogTracing = endpointConfiguration.EnableSerilogTracing(Log.Logger);
+serilogTracing.EnableMessageTracing();
+
+// Creates the queues, topics and tables the endpoint needs when it starts. Convenient in development.
+// In production, run installers as a deployment step, with rights the running endpoint does not need.
+endpointConfiguration.EnableInstallers();
+
+builder.Services.AddNServiceBusEndpoint(endpointConfiguration);
+builder.Services.AddSingleton&lt;OrderSubmitter&gt;();
+builder.Services.AddHostedService&lt;SampleOrders&gt;();
+
+await builder.Build().RunAsync();
+
+string ConnectionString(string name)
+{
+    var value = builder.Configuration.GetConnectionString(name);
+    if (string.IsNullOrWhiteSpace(value))
+    {
+        throw new InvalidOperationException(
+            $"Connection string '{name}' is not set. Add it to appsettings.json, or set the ConnectionStrings__{name} environment variable.");
+    }
+
+    return value;
+}
+</code></pre>
+                </div>
+              </div>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

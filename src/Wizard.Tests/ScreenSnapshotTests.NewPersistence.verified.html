@@ -1,0 +1,133 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">SQL Server</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Persistence</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Serializer</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Tests</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Features</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Options</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="persistence">
+            <div class="step-heading">
+              <h2>Persistence</h2>
+            </div>
+            <p class="hint">Where sagas, the outbox and subscriptions are stored. It is chosen per endpoint, and usually follows where the endpoint keeps its own data.</p>
+            <div class="mode-cards" role="radiogroup" aria-label="Persistence">
+              <button type="button" id="persistence-SqlServer" class="mode-card " role="radio" aria-checked="false">
+                <strong>SQL Server</strong>
+                <span>SQL persistence on SQL Server, with plain ADO.NET and scripts generated at build time. Pairs with the SQL Server transport.</span>
+              </button>
+              <button type="button" id="persistence-Learning" class="mode-card " role="radio" aria-checked="false">
+                <strong>Learning</strong>
+                <span>Sagas are json files in a .sagas folder under the build output. Nothing to install; for development only.</span>
+              </button>
+              <button type="button" id="persistence-NonDurable" class="mode-card " role="radio" aria-checked="false">
+                <strong>Non-durable</strong>
+                <span>Everything is kept in memory and lost when the process stops. For tests and demos.</span>
+              </button>
+              <button type="button" id="persistence-PostgreSql" class="mode-card " role="radio" aria-checked="false">
+                <strong>PostgreSQL</strong>
+                <span>SQL persistence on PostgreSQL, storing saga data as jsonb.</span>
+              </button>
+              <button type="button" id="persistence-MySql" class="mode-card " role="radio" aria-checked="false">
+                <strong>MySQL</strong>
+                <span>SQL persistence on MySQL.</span>
+              </button>
+              <button type="button" id="persistence-CosmosDb" class="mode-card " role="radio" aria-checked="false">
+                <strong>Azure Cosmos DB</strong>
+                <span>Sagas and the outbox as documents in a Cosmos DB container.</span>
+              </button>
+              <button type="button" id="persistence-AzureTable" class="mode-card " role="radio" aria-checked="false">
+                <strong>Azure Table Storage</strong>
+                <span>Sagas and the outbox as entities in Azure Table Storage, or the Cosmos DB Table API.</span>
+              </button>
+              <button type="button" id="persistence-DynamoDb" class="mode-card " role="radio" aria-checked="false">
+                <strong>Amazon DynamoDB</strong>
+                <span>Sagas and the outbox as items in a DynamoDB table.</span>
+              </button>
+              <button type="button" id="persistence-MongoDb" class="mode-card " role="radio" aria-checked="false">
+                <strong>MongoDB</strong>
+                <span>Sagas and the outbox as documents in MongoDB. Needs a replica set, for transactions.</span>
+              </button>
+              <button type="button" id="persistence-RavenDb" class="mode-card " role="radio" aria-checked="false">
+                <strong>RavenDB</strong>
+                <span>Sagas and the outbox as documents in RavenDB.</span>
+              </button>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+              <button type="button" class="primary" disabled="">Next: Serializer</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

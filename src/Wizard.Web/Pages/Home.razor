@@ -1,0 +1,30 @@
+@page "/"
+@inject BrowserStorage Storage
+<PageTitle>NServiceBus Wizard</PageTitle>
+
+@* Each paragraph is one source line: a line break inside text survives into the rendered markup as a run of spaces. *@
+<p>Pick a starting point. Each flow asks a few questions, then produces a guide, a download and markdown for an AI assistant.</p>
+
+<div class="entry-cards">
+    <a class="entry-card" href="new">
+        <h2>New endpoint</h2>
+        <p>Start from scratch: hosting, transport, persistence, serializer and tests, plus any features. The result is a solution that builds and runs.</p>
+    </a>
+    <a class="entry-card" href="add">
+        <h2>Add features to an existing endpoint</h2>
+        <p>Pick features to add: sagas, the outbox, monitoring, or an NServiceBus Community extension. The result is only what has to be merged in.</p>
+    </a>
+</div>
+
+<p class="hint">Every page's url holds the choices made so far, so any point can be bookmarked or shared.</p>
+<p class="hint forget">This browser remembers the transport and the persistence of the endpoint features were last added to, to fill them in next time. <button type="button" class="link-button" @onclick="Forget">@forgetLabel</button></p>
+
+@code {
+    string forgetLabel = "Forget them";
+
+    async Task Forget()
+    {
+        await Storage.ForgetAsync();
+        forgetLabel = "Forgotten";
+    }
+}

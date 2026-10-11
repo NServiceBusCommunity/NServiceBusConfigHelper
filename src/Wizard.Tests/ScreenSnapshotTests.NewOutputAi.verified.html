@@ -1,0 +1,183 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="serializer">
+                  <span class="step-title">Serializer</span>
+                  <span class="step-value">System.Text.Json</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="tests">
+                  <span class="step-title">Tests</span>
+                  <span class="step-value">xUnit v3</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="features">
+                  <span class="step-title">Features</span>
+                  <span class="step-value">3 features</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="options">
+                  <span class="step-title">Options</span>
+                  <span class="step-value">Defaults</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="output">
+            <div class="step-heading">
+              <h2>Result</h2>
+            </div>
+            <div class="field">
+              <label for="solutionName">Endpoint name</label>
+              <p class="hint">Used for the solution, the project, the namespace, and the endpoint's queue on the transport.</p>
+              <input type="text" id="solutionName">
+            </div>
+            <p class="hint versions" data-versions="live">Package versions are the newest stable releases on nuget.org.</p>
+            <div class="output-actions">
+              <button type="button" class="primary download-zip">Download solution (.zip)</button>
+              <button type="button" class="copy-guide">Copy guide as markdown</button>
+              <button type="button" class="download-guide">Download guide (.md)</button>
+              <button type="button" class="copy-ai">Copy AI instructions</button>
+              <button type="button" class="download-ai">Download AI instructions (.md)</button>
+              <button type="button" class="copy-link">Copy link to this page</button>
+            </div>
+            <div class="tabs" role="tablist">
+              <button type="button" role="tab" id="tab-Guide" class="tab " aria-selected="false">Guide</button>
+              <button type="button" role="tab" id="tab-Files" class="tab " aria-selected="false">Files</button>
+              <button type="button" role="tab" id="tab-AI" class="tab selected" aria-selected="true">AI</button>
+            </div>
+            <div class="tab-panel" role="tabpanel" aria-labelledby="tab-AI">
+              <pre class="ai-markdown"># SampleEndpoint: instructions for AI coding assistants
+
+Generated by the [NServiceBus wizard](https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&amp;host=Worker&amp;transport=RabbitMQ&amp;persistence=PostgreSql&amp;serializer=SystemJson&amp;tests=XunitV3&amp;features=Sagas,Outbox,Serilog). This solution is an NServiceBus endpoint; the facts below describe how it is set up.
+
+## Project facts
+
+ * Solution: `SampleEndpoint.slnx`. The endpoint is `src/SampleEndpoint`, and its name on the transport is `SampleEndpoint`. Renaming it renames its queue.
+ * Target framework `net10.0`, SDK pinned by `global.json` (10.0.401). NServiceBus 1.1.0.
+ * Packages use Central Package Management: add or change versions in `Directory.Packages.props`, and reference packages without a version.
+ * The whole endpoint configuration is in `src/SampleEndpoint/Program.cs`. It is registered with `builder.Services.AddNServiceBusEndpoint(endpointConfiguration)` and starts and stops with the host.
+ * Transport: RabbitMQ.
+ * Persistence: PostgreSQL.
+ * Serializer: System.Text.Json. Message classes need a parameterless constructor and settable properties.
+ * Connection strings (`RabbitMQ`, `PostgreSql`) are read from configuration in `Program.cs`; the development values are in `appsettings.json`.
+ * `docker compose up -d` starts what the endpoint needs locally.
+ * `EnableInstallers()` is on: the endpoint creates its queues and tables when it starts.
+ * Tests are in `src/SampleEndpoint.Tests`, with xUnit v3 and NServiceBus.Testing. Run them from the solution directory with `dotnet test`.
+
+## Working with NServiceBus
+
+ * A command implements `ICommand` and an event implements `IEvent`; both live in `SampleEndpoint.Messages`.
+ * A command asks one endpoint to do something, is named in the imperative, and is sent. An event says something has happened, is named in the past tense, and is published. Never publish a command or send an event.
+ * Changing or removing a property of a message breaks messages already in flight and endpoints not yet redeployed. Add properties; do not rename them.
+ * A handler implements `IHandleMessages&lt;T&gt;` and is found by assembly scanning: adding the class is enough.
+ * Inside a handler, send and publish through the `IMessageHandlerContext` it is given, never through `IMessageSession`: only then are the outgoing messages part of handling the incoming one.
+ * Do not catch an exception in a handler to keep going. Let it throw: NServiceBus retries the message, then moves it to the `error` queue.
+ * The outbox is on, so a redelivered message is not processed twice as long as the handler's data goes through the persistence's own session. Anything else a handler touches, such as an http call, can still happen twice.
+ * Outside a handler, send through `IMessageSession`, as `OrderSubmitter` does.
+ * Test a handler by calling `Handle` with a `TestableMessageHandlerContext`, then asserting on its `SentMessages` and `PublishedMessages`. Test code that uses `IMessageSession` with a `TestableMessageSession`. No test needs a transport.
+
+## Features of this endpoint
+
+### Sagas
+
+ * A long-running process with its own state: a sample saga that is started by an event and completes on a timeout.
+ * Documentation: https://docs.particular.net/nservicebus/sagas/
+ * Files: `Sagas/OrderSaga.cs`, `Sagas/OrderSagaData.cs`, `Sagas/CancellationWindowElapsed.cs`.
+ * A saga's state is stored by the persistence. Messages for one saga instance are handled one at a time: a concurrent update fails and is retried.
+ * A timeout is a message sent to the saga itself with a delay, so it survives a restart.
+
+### Outbox
+
+ * Stores a handler's outgoing messages with its data in one transaction, so a redelivered message is neither processed nor sent twice.
+ * Documentation: https://docs.particular.net/nservicebus/outbox/
+ * Configured by `endpointConfiguration.EnableOutbox();`.
+ * With the outbox on, the transport has to receive in `ReceiveOnly` mode, which `Program.cs` sets on the transport: consistency between the data and the outgoing messages comes from the outbox record, not from a transaction spanning the queue and the database.
+
+### Serilog
+
+ * Logs through Serilog, with NServiceBus exception details as structured properties, and a log event for each message handled and sent.
+ * Documentation: https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog
+ * Configured by `var serilogTracing = endpointConfiguration.EnableSerilogTracing(Log.Logger);`.
+ * Message tracing writes an event for every message received and sent, enriched with the message id, type, correlation id and conversation id. Inside a handler, `context.Logger()` is a logger that already carries them.
+
+## What the setup implies
+
+ * **Serilog**: Serilog is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).
+</pre>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

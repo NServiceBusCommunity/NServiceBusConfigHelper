@@ -1,0 +1,19 @@
+﻿{
+  "updated": "2026-10-08",
+  "packages": {
+    "NServiceBus": "10.2.9",
+    "NServiceBus.RabbitMQ": "11.2.1",
+    "Serilog.Sinks.Console": "6.0.0"
+  },
+  "pinned": {
+    "Serilog.Sinks.Console": "an example of a package held back"
+  }
+}
+
+==== summary
+
+Newest stable versions on nuget.org.
+
+| Package | From | To |
+|---|---|---|
+| NServiceBus.RabbitMQ | 11.0.0 | 11.2.1 |

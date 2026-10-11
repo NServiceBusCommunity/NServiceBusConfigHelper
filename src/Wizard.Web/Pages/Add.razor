@@ -1,0 +1,10 @@
+@page "/add"
+@page "/add/{FeatureId}"
+
+@* Adding features to an existing endpoint. /add/{FeatureId} starts with that feature selected, so an
+   extension's readme can link straight to it. *@
+<FlowPage Flow="Flow.Add" SeedFeature="@FeatureId" />
+
+@code {
+    [Parameter] public string? FeatureId { get; set; }
+}

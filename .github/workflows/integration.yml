@@ -1,0 +1,34 @@
+name: Generated solutions build and pass
+
+# Generates a solution per state in Integration/GeneratedSolutionTests, then runs dotnet build and
+# dotnet test on each. Slow and needs nuget.org, so it is not part of the deploy workflow.
+on:
+  pull_request:
+    paths:
+      - 'src/Wizard.Core/**'
+      - 'src/Wizard.Tests/Integration/**'
+      - 'global.json'
+  schedule:
+    - cron: '0 3 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  integration:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Build test project
+        run: dotnet build src/Wizard.Tests --configuration Release
+
+      - name: Run generated solution tests
+        run: dotnet run --project src/Wizard.Tests --configuration Release --no-build -- --no-ansi --progress off --treenode-filter "/*/*/GeneratedSolutionTests/*"

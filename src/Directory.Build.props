@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project>
+  <PropertyGroup>
+    <NoWarn>CS1591;NU1608;NU1109;NU1901</NoWarn>
+    <Version>0.1.0</Version>
+    <LangVersion>preview</LangVersion>
+    <!-- The one target framework for this repo. It is also baked into WizardDefaults.g.cs (see
+         Wizard.Core.csproj) and emitted into every generated solution, so the wizard's output always
+         targets the same framework as the wizard itself. -->
+    <GeneratedTargetFramework>net10.0</GeneratedTargetFramework>
+    <Description>Wizard for NServiceBus: generates a working endpoint, a guide and AI instructions.</Description>
+    <Authors>Simon Cropp</Authors>
+    <Copyright>Copyright Simon Cropp</Copyright>
+    <PackageProjectUrl>https://github.com/NServiceBusCommunity/NServiceBusConfigHelper</PackageProjectUrl>
+    <ResolveAssemblyReferencesSilent>true</ResolveAssemblyReferencesSilent>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+    <SuppressNETCoreSdkPreviewMessage>true</SuppressNETCoreSdkPreviewMessage>
+    <!-- Nothing in this repo ships as a package. Without this, ProjectDefaults treats every non-test
+         project as a package project in Release and turns on GeneratePackageOnBuild. -->
+    <IsPackageProject>false</IsPackageProject>
+    <IsPackable>false</IsPackable>
+    <SignAssembly>false</SignAssembly>
+    <Verify_SponsorshipExemption>OpenSource</Verify_SponsorshipExemption>
+    <Verify_SponsorshipExemptionUntil>2027-09</Verify_SponsorshipExemptionUntil>
+  </PropertyGroup>
+</Project>

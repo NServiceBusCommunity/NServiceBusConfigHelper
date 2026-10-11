@@ -1,0 +1,101 @@
+@* Installers, plus every choice the answers raised, plus what the combination implies. One compact
+   form: each row is a decision that changes the generated code, with the effect spelled out. *@
+@if (State.Flow == Flow.New)
+{
+    <fieldset class="choice" data-choice="installers">
+        <legend>Installers</legend>
+        <p class="hint">Whether the endpoint creates what it needs when it starts.</p>
+        <div class="mode-cards" role="radiogroup" aria-label="Installers">
+            @foreach (var option in installers)
+            {
+                var chosen = State.Installers == option.Enabled;
+                <button type="button"
+                        id="installers-@option.Value"
+                        class="mode-card @(chosen ? "selected" : "")"
+                        role="radio"
+                        aria-checked="@(chosen ? "true" : "false")"
+                        @onclick="() => SetInstallers(option.Enabled)">
+                    <strong>@option.Label</strong>
+                    <span>@option.Hint</span>
+                </button>
+            }
+        </div>
+    </fieldset>
+}
+
+@if (choices.Count > 0)
+{
+    <h3>Choices the answers raised</h3>
+    @foreach (var choice in choices)
+    {
+        <fieldset class="choice" data-choice="@choice.Id">
+            <legend>@choice.Label</legend>
+            <p class="hint">@choice.Hint</p>
+            @foreach (var option in choice.Options)
+            {
+                var chosen = State.ChoiceValue(choice) == option.Value;
+                <label class="choice-option @(chosen ? "selected" : "")">
+                    <input type="radio"
+                           name="@choice.Id"
+                           value="@option.Value"
+                           checked="@chosen"
+                           @onchange="() => SetChoice(choice.Id, option.Value)" />
+                    <span>
+                        <strong>@option.Label</strong>
+                        @if (option.Hint.Length > 0)
+                        {
+                            <span class="choice-hint">@option.Hint</span>
+                        }
+                    </span>
+                </label>
+            }
+        </fieldset>
+    }
+}
+else if (State.Flow == Flow.Add)
+{
+    <p class="hint">Nothing selected raises a choice.</p>
+}
+
+@if (notes.Count > 0)
+{
+    <h3>What the answers imply</h3>
+    <div class="interactions">
+        @foreach (var interaction in notes)
+        {
+            <InteractionNotice Result="interaction" />
+        }
+    </div>
+}
+
+@code {
+    [Parameter, EditorRequired] public WizardState State { get; set; } = null!;
+    [Parameter] public EventCallback Changed { get; set; }
+
+    static readonly (string Value, bool Enabled, string Label, string Hint)[] installers =
+    [
+        ("on", true, "Create on startup", "EnableInstallers: queues, topics and tables are created when the endpoint starts. Convenient in development."),
+        ("off", false, "Leave to deployment", "The endpoint creates nothing. Its queues and tables have to exist before it starts.")
+    ];
+
+    IReadOnlyList<ChoiceDefinition> choices = [];
+    IReadOnlyList<InteractionResult> notes = [];
+
+    protected override void OnParametersSet()
+    {
+        choices = State.AvailableChoices();
+        notes = InteractionRules.For(State);
+    }
+
+    Task SetInstallers(bool enabled)
+    {
+        State.Installers = enabled;
+        return Changed.InvokeAsync();
+    }
+
+    Task SetChoice(string id, string value)
+    {
+        State.SetChoice(id, value);
+        return Changed.InvokeAsync();
+    }
+}

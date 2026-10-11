@@ -1,0 +1,91 @@
+@* The feature picker, grouped by category so a long list stays navigable. Every notice the selection
+   raises appears above the cards as soon as the combination exists, rather than at the end. *@
+@if (State.Flow == Flow.Add)
+{
+    <p class="hint">Choose what to add to the endpoint. At least one is needed. @Features.All.Count are available.</p>
+}
+else
+{
+    <p class="hint">Nothing here is required, and anything chosen can be deleted from what is generated later. @Features.All.Count are available.</p>
+}
+
+<div class="feature-search">
+    <label for="featureFilter">Filter</label>
+    <input type="text"
+           id="featureFilter"
+           placeholder="Name or description"
+           value="@filter"
+           @oninput="FilterChanged" />
+    <span class="selected-count">@State.SelectedFeatures.Count selected</span>
+</div>
+
+@if (interactions.Count > 0)
+{
+    <div class="interactions">
+        @foreach (var interaction in interactions)
+        {
+            <InteractionNotice Result="interaction" />
+        }
+    </div>
+}
+
+@foreach (var category in Categories)
+{
+    <section class="feature-category">
+        <h3>@category.Key.Label()</h3>
+        <div class="feature-cards">
+            @foreach (var definition in category)
+            {
+                <FeatureCard Definition="definition"
+                             Selected="State.Has(definition.Id)"
+                             Unavailable="@State.Unavailable(definition.Id)"
+                             SelectedChanged="_ => Toggle(definition.Id, _)" />
+            }
+        </div>
+    </section>
+}
+
+@code {
+    [Parameter, EditorRequired] public WizardState State { get; set; } = null!;
+    [Parameter] public EventCallback Changed { get; set; }
+
+    string filter = "";
+
+    IReadOnlyList<InteractionResult> interactions = [];
+
+    // What is about the transport or the persistence alone belongs on the options step.
+    protected override void OnParametersSet() =>
+        interactions = [.. InteractionRules.For(State).Where(_ => !_.Stack)];
+
+    IEnumerable<IGrouping<FeatureCategory, FeatureDefinition>> Categories =>
+        Features.All
+            .Where(Matches)
+            .GroupBy(_ => _.Category)
+            .OrderBy(_ => _.Key);
+
+    bool Matches(FeatureDefinition definition)
+    {
+        if (filter.Length == 0)
+        {
+            return true;
+        }
+
+        // A selected feature stays visible whatever the filter says, so it cannot be lost from view.
+        if (State.Has(definition.Id))
+        {
+            return true;
+        }
+
+        return definition.DisplayName.Contains(filter, StringComparison.OrdinalIgnoreCase) ||
+               definition.Description.Contains(filter, StringComparison.OrdinalIgnoreCase);
+    }
+
+    void FilterChanged(ChangeEventArgs args) =>
+        filter = args.Value as string ?? "";
+
+    Task Toggle(string id, bool selected)
+    {
+        State.Select(id, selected);
+        return Changed.InvokeAsync();
+    }
+}

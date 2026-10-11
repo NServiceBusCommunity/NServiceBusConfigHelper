@@ -1,0 +1,300 @@
+﻿[
+  {
+    Id: SendOnly,
+    DisplayName: Send-only,
+    Category: Messaging,
+    Community: false,
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/endpoints/#send-only
+  },
+  {
+    Id: Conventions,
+    DisplayName: Message conventions,
+    Category: Messaging,
+    Community: false,
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/messaging/conventions
+  },
+  {
+    Id: Sagas,
+    DisplayName: Sagas,
+    Category: Messaging,
+    Community: false,
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: true,
+    Files: [
+      Sagas/OrderSaga.cs,
+      Sagas/OrderSagaData.cs,
+      Sagas/CancellationWindowElapsed.cs
+    ],
+    DocsUrl: https://docs.particular.net/nservicebus/sagas/
+  },
+  {
+    Id: HandlerOrdering,
+    DisplayName: Handler ordering,
+    Category: Messaging,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.HandlerOrdering
+    ],
+    Usings: [
+      HandlerOrdering
+    ],
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: true,
+    Files: [
+      Handlers/NotifyWarehouseHandler.cs
+    ],
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.HandlerOrdering
+  },
+  {
+    Id: Recoverability,
+    DisplayName: Retry policy,
+    Category: Reliability,
+    Community: false,
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/recoverability/
+  },
+  {
+    Id: Outbox,
+    DisplayName: Outbox,
+    Category: Reliability,
+    Community: false,
+    NeedsReceiving: true,
+    NeedsOutboxStorage: true,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/outbox/
+  },
+  {
+    Id: Auditing,
+    DisplayName: Auditing,
+    Category: Monitoring,
+    Community: false,
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/operations/auditing
+  },
+  {
+    Id: AuditFilter,
+    DisplayName: Audit filter,
+    Category: Monitoring,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.AuditFilter
+    ],
+    Usings: [
+      NServiceBus.AuditFilter
+    ],
+    Requires: [
+      Auditing
+    ],
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    Choices: [
+      audit-filter-default
+    ],
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.AuditFilter
+  },
+  {
+    Id: Heartbeats,
+    DisplayName: Heartbeats,
+    Category: Monitoring,
+    Community: false,
+    Packages: [
+      NServiceBus.Heartbeat
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: true,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/monitoring/heartbeats/
+  },
+  {
+    Id: CustomChecks,
+    DisplayName: Custom checks,
+    Category: Monitoring,
+    Community: false,
+    Packages: [
+      NServiceBus.CustomChecks
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: true,
+    UsesSamples: false,
+    Files: [
+      CustomChecks/DiskSpaceCheck.cs
+    ],
+    DocsUrl: https://docs.particular.net/monitoring/custom-checks/
+  },
+  {
+    Id: Metrics,
+    DisplayName: Performance metrics,
+    Category: Monitoring,
+    Community: false,
+    Packages: [
+      NServiceBus.Metrics.ServiceControl
+    ],
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: true,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/monitoring/metrics/
+  },
+  {
+    Id: SagaAudit,
+    DisplayName: Saga audit,
+    Category: Monitoring,
+    Community: false,
+    Packages: [
+      NServiceBus.SagaAudit
+    ],
+    Requires: [
+      Sagas
+    ],
+    NeedsReceiving: true,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: true,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/sagas/saga-audit
+  },
+  {
+    Id: OpenTelemetry,
+    DisplayName: OpenTelemetry,
+    Category: Observability,
+    Community: false,
+    Packages: [
+      OpenTelemetry.Extensions.Hosting,
+      OpenTelemetry.Exporter.OpenTelemetryProtocol
+    ],
+    Usings: [
+      OpenTelemetry.Metrics,
+      OpenTelemetry.Resources,
+      OpenTelemetry.Trace
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://docs.particular.net/nservicebus/operations/opentelemetry
+  },
+  {
+    Id: Serilog,
+    DisplayName: Serilog,
+    Category: Observability,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.Serilog,
+      Serilog.Extensions.Logging,
+      Serilog.Sinks.Console
+    ],
+    Usings: [
+      Serilog
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog
+  },
+  {
+    Id: FluentValidation,
+    DisplayName: FluentValidation,
+    Category: Validation,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.FluentValidation
+    ],
+    Usings: [
+      FluentValidation
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: true,
+    Files: [
+      Validation/PlaceOrderValidator.cs
+    ],
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.Validation#nservicebusfluentvalidation
+  },
+  {
+    Id: DataAnnotations,
+    DisplayName: DataAnnotations,
+    Category: Validation,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.DataAnnotations
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.Validation#nservicebusdataannotations
+  },
+  {
+    Id: AttachmentsSql,
+    DisplayName: SQL attachments,
+    Category: Attachments,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.Attachments.Sql,
+      Microsoft.Data.SqlClient
+    ],
+    Usings: [
+      Microsoft.Data.SqlClient,
+      NServiceBus.Attachments.Sql
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    Connections: [
+      SqlServer
+    ],
+    Files: [
+      {CommandsFolder}/StoreDocument.cs,
+      Handlers/StoreDocumentHandler.cs,
+      Attachments/DocumentSender.cs
+    ],
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.Attachments/blob/main/docs/sql.md
+  },
+  {
+    Id: AttachmentsFileShare,
+    DisplayName: File share attachments,
+    Category: Attachments,
+    Community: true,
+    Packages: [
+      NServiceBus.Community.Attachments.FileShare
+    ],
+    Usings: [
+      NServiceBus.Attachments.FileShare
+    ],
+    NeedsReceiving: false,
+    NeedsOutboxStorage: false,
+    NeedsServiceControl: false,
+    UsesSamples: false,
+    Files: [
+      {CommandsFolder}/StoreDocument.cs,
+      Handlers/StoreDocumentHandler.cs,
+      Attachments/DocumentSender.cs
+    ],
+    DocsUrl: https://github.com/NServiceBusCommunity/NServiceBus.Community.Attachments/blob/main/docs/fileshare.md
+  }
+]

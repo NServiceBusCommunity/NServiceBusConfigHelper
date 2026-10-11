@@ -1,0 +1,92 @@
+name: Deploy wizard to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'global.json'
+      - '.github/workflows/deploy.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  # The screenshot baselines are made on Windows, so the tests run there.
+  test:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Build test project
+        run: dotnet build src/Wizard.Tests --configuration Release
+
+      - name: Install Playwright browser
+        run: pwsh src/Wizard.Tests/bin/Release/net10.0/playwright.ps1 install chromium
+
+      - name: Run tests
+        run: dotnet run --project src/Wizard.Tests --configuration Release --no-build -- --no-ansi --progress off
+
+      - name: Upload received snapshots on failure
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: received-snapshots
+          path: '**/*.received.*'
+          if-no-files-found: ignore
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Publish
+        run: dotnet publish src/Wizard.Web --configuration Release --output publish
+
+      - name: Set base href for GitHub Pages
+        run: sed -i 's|<base href="/" />|<base href="/NServiceBusConfigHelper/" />|g' publish/wwwroot/index.html
+
+      - name: Add .nojekyll
+        run: touch publish/wwwroot/.nojekyll
+
+      - name: Copy index.html to 404.html for SPA routing
+        run: cp publish/wwwroot/index.html publish/wwwroot/404.html
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v6
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: publish/wwwroot
+
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

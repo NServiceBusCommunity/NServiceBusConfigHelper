@@ -1,0 +1,38 @@
+﻿<nav class="breadcrumb" aria-label="Wizard progress">
+  <a class="breadcrumb-flow" href="">New endpoint</a>
+  <ol>
+    <li class="done">
+      <button type="button" class="step-link" data-step="host" blazor:onclick="1">
+        <span class="step-title">Hosting</span>
+        <span class="step-value">Worker service</span>
+      </button>
+    </li>
+    <li class="done">
+      <button type="button" class="step-link" data-step="transport" blazor:onclick="2">
+        <span class="step-title">Transport</span>
+        <span class="step-value">RabbitMQ</span>
+      </button>
+    </li>
+    <li class="done">
+      <button type="button" class="step-link" data-step="persistence" blazor:onclick="3">
+        <span class="step-title">Persistence</span>
+        <span class="step-value">PostgreSQL</span>
+      </button>
+    </li>
+    <li class="current" aria-current="step">
+      <span class="step-title">Serializer</span>
+    </li>
+    <li class="future">
+      <span class="step-title">Tests</span>
+    </li>
+    <li class="future">
+      <span class="step-title">Features</span>
+    </li>
+    <li class="future">
+      <span class="step-title">Options</span>
+    </li>
+    <li class="future">
+      <span class="step-title">Result</span>
+    </li>
+  </ol>
+</nav>

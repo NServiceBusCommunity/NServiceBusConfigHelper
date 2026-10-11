@@ -1,0 +1,59 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <p>Pick a starting point. Each flow asks a few questions, then produces a guide, a download and markdown for an AI assistant.</p>
+        <div class="entry-cards">
+          <a class="entry-card" href="new">
+            <h2>New endpoint</h2>
+            <p>Start from scratch: hosting, transport, persistence, serializer and tests, plus any features. The result is a solution that builds and runs.</p>
+          </a>
+          <a class="entry-card" href="add">
+            <h2>Add features to an existing endpoint</h2>
+            <p>Pick features to add: sagas, the outbox, monitoring, or an NServiceBus Community extension. The result is only what has to be merged in.</p>
+          </a>
+        </div>
+        <p class="hint">Every page's url holds the choices made so far, so any point can be bookmarked or shared.</p>
+        <p class="hint forget">This browser remembers the transport and the persistence of the endpoint features were last added to, to fill them in next time.
+          <button type="button" class="link-button">Forget them</button>
+        </p>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

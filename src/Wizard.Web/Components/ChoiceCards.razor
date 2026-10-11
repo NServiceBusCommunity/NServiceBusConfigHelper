@@ -1,0 +1,30 @@
+@typeparam TValue where TValue : struct, Enum
+
+@* One card per option; the selected one is highlighted. Ids are "{IdPrefix}-{member name}" so tests
+   and deep links can address an option directly. *@
+<div class="mode-cards" role="radiogroup" aria-label="@Label">
+    @foreach (var option in Options)
+    {
+        var selected = Value is { } value && EqualityComparer<TValue>.Default.Equals(value, option.Value);
+        <button type="button"
+                id="@($"{IdPrefix}-{option.Value}")"
+                class="mode-card @(selected ? "selected" : "")"
+                role="radio"
+                aria-checked="@(selected ? "true" : "false")"
+                @onclick="() => ValueChanged.InvokeAsync(option.Value)">
+            <strong>@option.Title</strong>
+            @if (option.Description.Length > 0)
+            {
+                <span>@option.Description</span>
+            }
+        </button>
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<Choice<TValue>> Options { get; set; } = [];
+    [Parameter] public TValue? Value { get; set; }
+    [Parameter] public EventCallback<TValue> ValueChanged { get; set; }
+    [Parameter, EditorRequired] public string IdPrefix { get; set; } = "";
+    [Parameter, EditorRequired] public string Label { get; set; } = "";
+}

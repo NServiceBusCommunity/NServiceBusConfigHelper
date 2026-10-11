@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<linker>
+  <!-- Preserve the app assemblies for Blazor component discovery under full trimming -->
+  <assembly fullname="Wizard.Web" preserve="all" />
+  <assembly fullname="Wizard.Core" preserve="all" />
+</linker>

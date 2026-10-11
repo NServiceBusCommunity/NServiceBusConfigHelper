@@ -1,0 +1,27 @@
+@using Markdig
+
+@* Renders generated markdown. The markdown is the wizard's own output, not user input, so it is not
+   sanitised. *@
+<div class="markdown">@((MarkupString) html)</div>
+
+@code {
+    static readonly MarkdownPipeline pipeline = new MarkdownPipelineBuilder()
+        .UseAdvancedExtensions()
+        .Build();
+
+    [Parameter, EditorRequired] public string Markdown { get; set; } = "";
+
+    string html = "";
+    string? rendered;
+
+    protected override void OnParametersSet()
+    {
+        if (rendered == Markdown)
+        {
+            return;
+        }
+
+        rendered = Markdown;
+        html = Markdig.Markdown.ToHtml(Markdown, pipeline);
+    }
+}

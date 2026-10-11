@@ -1,0 +1,21 @@
+@* One fired rule. A conflict is blocking, so it says what to do; the rest explain what the combination
+   means that no single answer says. The message is the wizard's own markdown. *@
+<div class="interaction-notice @Result.Severity.ToString().ToLowerInvariant()" data-rule="@Result.RuleId">
+    <p class="interaction-heading">
+        <span class="severity">@Heading</span>
+        <span class="involved">@string.Join(", ", Result.Involved)</span>
+    </p>
+    <MarkdownView Markdown="@Result.Message" />
+</div>
+
+@code {
+    [Parameter, EditorRequired] public InteractionResult Result { get; set; } = null!;
+
+    string Heading =>
+        Result.Severity switch
+        {
+            Severity.Conflict => "Has to change",
+            Severity.Warning => "Needs something else",
+            _ => "Worth knowing"
+        };
+}

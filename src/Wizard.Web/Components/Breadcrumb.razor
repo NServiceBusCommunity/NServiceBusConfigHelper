@@ -1,0 +1,54 @@
+@* The left rail: every step of the flow. Completed steps show the chosen value and can be
+   revisited; the current step is highlighted; later steps are shown but not clickable, because they
+   are gated by the steps before them. Below 768px wide the css turns it into a horizontal strip. *@
+<nav class="breadcrumb" aria-label="Wizard progress">
+    <a class="breadcrumb-flow" href="">@State.Flow.Name()</a>
+    <ol>
+        @{
+            var reachable = true;
+        }
+        @foreach (var step in Steps)
+        {
+            var current = step.Id == State.Step;
+            var complete = step.IsComplete(State);
+            var summary = step.Summary(State);
+            if (current)
+            {
+                <li class="current" aria-current="step">
+                    <span class="step-title">@step.Title</span>
+                </li>
+            }
+            else if (reachable)
+            {
+                <li class="@(complete ? "done" : "open")">
+                    <button type="button"
+                            class="step-link"
+                            data-step="@step.Id"
+                            @onclick="() => StepSelected.InvokeAsync(step.Id)">
+                        <span class="step-title">@step.Title</span>
+                        @if (complete && summary != null)
+                        {
+                            <span class="step-value">@summary</span>
+                        }
+                    </button>
+                </li>
+            }
+            else
+            {
+                <li class="future">
+                    <span class="step-title">@step.Title</span>
+                </li>
+            }
+
+            reachable = reachable && complete;
+        }
+    </ol>
+</nav>
+
+@code {
+    [Parameter, EditorRequired] public WizardState State { get; set; } = null!;
+    [Parameter, EditorRequired] public IReadOnlyList<StepDefinition> Steps { get; set; } = [];
+
+    /// <summary>Raised with the id of a step that can be revisited.</summary>
+    [Parameter] public EventCallback<string> StepSelected { get; set; }
+}

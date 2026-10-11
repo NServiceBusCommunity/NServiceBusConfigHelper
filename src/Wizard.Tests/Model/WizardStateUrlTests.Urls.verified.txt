@@ -1,0 +1,8 @@
+﻿[
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=host,
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&host=Worker&transport=Learning&persistence=Learning&serializer=SystemJson&tests=XunitV3,
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&host=AspNetCore&transport=RabbitMQ&persistence=PostgreSql&serializer=NewtonsoftJson&tests=None&name=Acme.Sales&installers=false,
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&host=Worker&transport=SqlServer&persistence=SqlServer&serializer=SystemJson&tests=XunitV3&features=Conventions,Sagas,HandlerOrdering,Recoverability,Outbox,Auditing,AuditFilter,Heartbeats,CustomChecks,Metrics,SagaAudit,OpenTelemetry,Serilog,FluentValidation,DataAnnotations,AttachmentsSql,
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&host=Worker&transport=RabbitMQ&persistence=Learning&serializer=SystemJson&tests=XunitV3&features=Auditing,AuditFilter&opt=audit-filter-default:ExcludeFromAudit,rabbitmq-queue-type:Classic,
+  https://nservicebuscommunity.github.io/NServiceBusConfigHelper/add?step=output&transport=SqlServer&persistence=SqlServer&features=Outbox,Serilog
+]

@@ -1,0 +1,201 @@
+@inject ClipboardService Clipboard
+@inject DownloadService Download
+@inject NavigationManager Navigation
+@inject PackageVersionLookup Lookup
+
+@* The terminating step: the guide, the files of the downloadable solution, and the AI
+   instructions, with copy and download actions for each. *@
+@if (output.Plan.IsAddition)
+{
+    <p class="hint">The download holds the changes to merge into the endpoint, each file named for where it goes. The guide walks through them in order, and the AI instructions ask an assistant to do the same.</p>
+}
+else
+{
+    <div class="field">
+        <label for="solutionName">Endpoint name</label>
+        <p class="hint">Used for the solution, the project, the namespace, and the endpoint's queue on the transport.</p>
+        <input type="text"
+               id="solutionName"
+               value="@State.SolutionName"
+               @onchange="NameChanged" />
+    </div>
+}
+
+@* data-versions says where the versions came from: the tests wait for it to settle before a screenshot. *@
+<p class="hint versions" data-versions="@versionsState">@VersionsText</p>
+
+<div class="output-actions">
+    <button type="button" class="primary download-zip" @onclick="DownloadZip">@DownloadLabel</button>
+    <button type="button" class="copy-guide" @onclick="() => Copy(output.Guide, nameof(output.Guide))">@CopyLabel(nameof(output.Guide), "Copy guide as markdown")</button>
+    <button type="button" class="download-guide" @onclick="() => Download.DownloadTextAsync(GuideFileName, output.Guide)">Download guide (.md)</button>
+    <button type="button" class="copy-ai" @onclick="() => Copy(output.Ai, nameof(output.Ai))">@CopyLabel(nameof(output.Ai), "Copy AI instructions")</button>
+    <button type="button" class="download-ai" @onclick="() => Download.DownloadTextAsync(AiFileName, output.Ai)">Download AI instructions (.md)</button>
+    <button type="button" class="copy-link" @onclick="() => Copy(Navigation.Uri, nameof(Navigation))">@CopyLabel(nameof(Navigation), "Copy link to this page")</button>
+</div>
+
+<div class="tabs" role="tablist">
+    @foreach (var tab in tabs)
+    {
+        <button type="button"
+                role="tab"
+                id="tab-@tab"
+                class="tab @(tab == selectedTab ? "selected" : "")"
+                aria-selected="@(tab == selectedTab ? "true" : "false")"
+                @onclick="() => selectedTab = tab">@tab</button>
+    }
+</div>
+
+<div class="tab-panel" role="tabpanel" aria-labelledby="tab-@selectedTab">
+    @switch (selectedTab)
+    {
+        case "Guide":
+            <MarkdownView Markdown="@output.Guide" />
+            break;
+        case "Files":
+            <div class="file-browser">
+                <div>
+                    <p class="file-root">@(output.Plan.ZipRoot)/</p>
+                    <ul class="file-list">
+                        @foreach (var file in output.Files)
+                        {
+                            <li>
+                                <button type="button"
+                                        class="file-link @(file.Path == SelectedFile.Path ? "selected" : "")"
+                                        @onclick="() => selectedPath = file.Path">@PathWithBreaks(file.Path)</button>
+                            </li>
+                        }
+                    </ul>
+                </div>
+                <CodeBox Title="@SelectedFile.Path" Content="@SelectedFile.Text" />
+            </div>
+            break;
+        default:
+            <pre class="ai-markdown">@output.Ai</pre>
+            break;
+    }
+</div>
+
+@code {
+    [Parameter, EditorRequired] public WizardState State { get; set; } = null!;
+    [Parameter, EditorRequired] public Date Today { get; set; }
+    [Parameter] public EventCallback Changed { get; set; }
+
+    static readonly string[] tabs = ["Guide", "Files", "AI"];
+
+    string selectedTab = "Guide";
+    string? selectedPath;
+    string? copied;
+    Output output = null!;
+    WizardState? generatedFor;
+    string versionsState = "pending";
+
+    sealed record Output(Plan Plan, string Guide, string Ai, IReadOnlyList<GeneratedFile> Files);
+
+    protected override void OnParametersSet()
+    {
+        // generation is pure, so it only reruns when the state changed
+        if (generatedFor == State)
+        {
+            return;
+        }
+
+        generatedFor = State with { };
+        Generate(PackageVersions.Baked);
+        copied = null;
+        _ = CheckVersions(generatedFor);
+    }
+
+    void Generate(PackageVersions versions)
+    {
+        var plan = Plan.Build(generatedFor!, versions, Today);
+        output = new(plan, DocsGenerator.Build(plan), AiContentGenerator.Build(plan), SolutionGenerator.Build(plan));
+    }
+
+    /// <summary>
+    /// The output is on screen straight away with the baked versions, then regenerated with nuget.org's
+    /// newest once they arrive. Nothing waits on the network.
+    /// </summary>
+    async Task CheckVersions(WizardState forState)
+    {
+        versionsState = "pending";
+        var baked = PackageVersions.Baked;
+        var wanted = output.Plan.EmittedPackages.Where(_ => !baked.IsPinned(_)).ToList();
+        var found = await Lookup.NewestAsync(wanted);
+
+        // a later change has already started its own check
+        if (!ReferenceEquals(forState, generatedFor))
+        {
+            return;
+        }
+
+        var live = found.Count == wanted.Count;
+        if (found.Count > 0)
+        {
+            Generate(baked.With(found, live));
+        }
+
+        versionsState = live ? "live" : "baked";
+        await InvokeAsync(StateHasChanged);
+    }
+
+    string VersionsText =>
+        versionsState switch
+        {
+            "pending" => "Checking nuget.org for the newest versions.",
+            "live" => "Package versions are the newest stable releases on nuget.org.",
+            _ => $"nuget.org could not be reached, so some package versions are as of {PackageVersions.Baked.Updated.ToString("yyyy-MM-dd", CultureInfo.InvariantCulture)}."
+        };
+
+    GeneratedFile SelectedFile =>
+        output.Files.FirstOrDefault(_ => _.Path == selectedPath) ??
+        output.Files.First(_ => _.Path == "readme.md");
+
+    /// <summary>Long paths wrap only after a separator, never inside a file name.</summary>
+    static MarkupString PathWithBreaks(string path) =>
+        new(string.Join("/<wbr>", path.Split('/').Select(System.Net.WebUtility.HtmlEncode)));
+
+    string GuideFileName => $"{output.Plan.ZipRoot}-guide.md";
+
+    string AiFileName => $"{output.Plan.ZipRoot}-ai-instructions.md";
+
+    string DownloadLabel
+    {
+        get
+        {
+            if (output.Plan.IsAddition)
+            {
+                return "Download changes (.zip)";
+            }
+
+            return "Download solution (.zip)";
+        }
+    }
+
+    string CopyLabel(string key, string label)
+    {
+        if (copied == key)
+        {
+            return "Copied!";
+        }
+
+        return label;
+    }
+
+    async Task Copy(string text, string key)
+    {
+        await Clipboard.CopyAsync(text);
+        copied = key;
+    }
+
+    Task DownloadZip()
+    {
+        var zip = ZipBuilder.Build(output.Plan.ZipRoot, output.Files);
+        return Download.DownloadAsync($"{output.Plan.ZipRoot}.zip", "application/zip", zip).AsTask();
+    }
+
+    Task NameChanged(ChangeEventArgs args)
+    {
+        State.SolutionName = SolutionNames.Clean(args.Value as string);
+        return Changed.InvokeAsync();
+    }
+}

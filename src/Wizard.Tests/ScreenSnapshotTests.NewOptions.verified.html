@@ -1,0 +1,168 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="serializer">
+                  <span class="step-title">Serializer</span>
+                  <span class="step-value">System.Text.Json</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="tests">
+                  <span class="step-title">Tests</span>
+                  <span class="step-value">xUnit v3</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="features">
+                  <span class="step-title">Features</span>
+                  <span class="step-value">Auditing, Audit filter</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Options</span>
+              </li>
+              <li class="open">
+                <button type="button" class="step-link" data-step="output">
+                  <span class="step-title">Result</span>
+                </button>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="options">
+            <div class="step-heading">
+              <h2>Options</h2>
+            </div>
+            <fieldset class="choice" data-choice="installers">
+              <legend>Installers</legend>
+              <p class="hint">Whether the endpoint creates what it needs when it starts.</p>
+              <div class="mode-cards" role="radiogroup" aria-label="Installers">
+                <button type="button" id="installers-on" class="mode-card selected" role="radio" aria-checked="true">
+                  <strong>Create on startup</strong>
+                  <span>EnableInstallers: queues, topics and tables are created when the endpoint starts. Convenient in development.</span>
+                </button>
+                <button type="button" id="installers-off" class="mode-card " role="radio" aria-checked="false">
+                  <strong>Leave to deployment</strong>
+                  <span>The endpoint creates nothing. Its queues and tables have to exist before it starts.</span>
+                </button>
+              </div>
+            </fieldset>
+            <h3>Choices the answers raised</h3>
+            <fieldset class="choice" data-choice="rabbitmq-queue-type">
+              <legend>RabbitMQ queue type</legend>
+              <p class="hint">The kind of queue the endpoint creates. Every endpoint that exchanges messages has to agree.</p>
+              <label class="choice-option selected">
+                <input type="radio" name="rabbitmq-queue-type" value="Quorum">
+                <span>
+                  <strong>Quorum queues</strong>
+                  <span class="choice-hint">Replicated across the cluster's nodes. What NServiceBus recommends.</span>
+                </span>
+              </label>
+              <label class="choice-option ">
+                <input type="radio" name="rabbitmq-queue-type" value="Classic">
+                <span>
+                  <strong>Classic queues</strong>
+                  <span class="choice-hint">Not replicated. For a broker that predates quorum queues.</span>
+                </span>
+              </label>
+            </fieldset>
+            <fieldset class="choice" data-choice="audit-filter-default">
+              <legend>Messages with no audit attribute</legend>
+              <p class="hint">What happens to a message type that is marked neither [IncludeInAudit] nor [ExcludeFromAudit].</p>
+              <label class="choice-option selected">
+                <input type="radio" name="audit-filter-default" value="IncludeInAudit">
+                <span>
+                  <strong>Audit them</strong>
+                  <span class="choice-hint">Everything is audited except the types marked [ExcludeFromAudit].</span>
+                </span>
+              </label>
+              <label class="choice-option ">
+                <input type="radio" name="audit-filter-default" value="ExcludeFromAudit">
+                <span>
+                  <strong>Leave them out</strong>
+                  <span class="choice-hint">Only the types marked [IncludeInAudit] are audited.</span>
+                </span>
+              </label>
+            </fieldset>
+            <h3>What the answers imply</h3>
+            <div class="interactions">
+              <div class="interaction-notice info" data-rule="community-backing">
+                <p class="interaction-heading">
+                  <span class="severity">Worth knowing</span>
+                  <span class="involved">Audit filter</span>
+                </p>
+                <div class="markdown">
+                  <p>Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to
+                    <a href="https://github.com/NServiceBusCommunity/Home#community-backed">become patrons</a>.</p>
+                </div>
+              </div>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+              <button type="button" class="primary">Next: Result</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

@@ -1,0 +1,1072 @@
+/*
+ * Bundled webfonts. Chromium shapes text with HarfBuzz on every OS, so a font served with the app
+ * measures identically everywhere, while a system font (Segoe UI on Windows, whatever fontconfig
+ * picks on Linux) does not — and differing advance widths re-wrap prose, which moves the height of
+ * a full-page screenshot. Shipping the faces is what lets ScreenSnapshotTests compare PNGs on any
+ * OS. See wwwroot/fonts/readme.md for provenance and licences.
+ *
+ * The unicode-range descriptors are the source of truth for what the bundled subsets cover:
+ * RepoContractTests.ShippedFontsCoverRenderedText parses them and fails if the wizard renders a
+ * character that would fall through to a system font.
+ */
+@font-face {
+    font-family: 'Wizard Sans';
+    src: url('../fonts/open-sans.woff2') format('woff2');
+    font-weight: 300 800;
+    font-style: normal;
+    font-display: block;
+    unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026, U+2039-203A, U+2122;
+}
+
+/* Open Sans has no arrows; these come from Work Sans under the same family name. */
+@font-face {
+    font-family: 'Wizard Sans';
+    src: url('../fonts/work-sans-arrows.woff2') format('woff2');
+    font-weight: 300 800;
+    font-style: normal;
+    font-display: block;
+    unicode-range: U+2190-2193;
+}
+
+@font-face {
+    font-family: 'Wizard Mono';
+    src: url('../fonts/ubuntu-mono.woff2') format('woff2');
+    font-weight: 400 700;
+    font-style: normal;
+    font-display: block;
+    unicode-range: U+0020-007E, U+00A0-00FF, U+2013-2014, U+2018-2019, U+201C-201D, U+2022, U+2026, U+2039-203A, U+2122;
+}
+
+/* The chrome is monochrome and links carry the colour. */
+:root {
+    --primary: #24292f;
+    --primary-contrast: #ffffff;
+    --link: #0969da;
+    --bg: #f6f7f9;
+    --panel: #ffffff;
+    --text: #1f2328;
+    --muted: #656d76;
+    --border: #d0d7de;
+    --code-bg: #f6f8fa;
+    --accent: #1f883d;
+    --warn-bg: #fff8c5;
+    --warn-border: #d4a72c;
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --primary: #e6edf3;
+        --primary-contrast: #0d1117;
+        --link: #58a6ff;
+        --bg: #0d1117;
+        --panel: #161b22;
+        --text: #e6edf3;
+        --muted: #8b949e;
+        --border: #30363d;
+        --code-bg: #0d1117;
+        --accent: #3fb950;
+        --warn-bg: #3a2d12;
+        --warn-border: #9e6a03;
+    }
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    font-family: 'Wizard Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    /*
+     * Bundling the fonts pins which outlines are used, but not how they are measured: by default
+     * the rasterizer rounds advance widths to fit its hinting grid, and FreeType and DirectWrite
+     * round differently, so the same sentence wraps at a different word on Linux than on Windows.
+     * geometricPrecision measures from the font's own metrics instead, making line breaks — and so
+     * page height — identical everywhere. Without it the ScreenSnapshotTests PNGs drift per OS.
+     */
+    text-rendering: geometricPrecision;
+}
+
+a {
+    color: var(--link);
+}
+
+/*
+ * The UA stylesheet sets font-family on these elements, and that beats inheritance — so a <code>
+ * inside a styled <pre> silently renders in the platform's own monospace font rather than the
+ * bundled one. Naming the bundled face here keeps inline code and code blocks pinned alike.
+ */
+code, pre, kbd, samp {
+    font-family: 'Wizard Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+/*
+ * A line's height is the union of the strut and every inline box on it, each positioned from its
+ * own font's ascent and descent — values the rasterizer rounds to whole pixels, differently per
+ * platform. Keeping the inline box inside the strut makes the line height depend on the strut alone.
+ */
+code, kbd, samp {
+    line-height: 1;
+}
+
+/* Form controls do not inherit font-family either, so they would measure per-platform too. Chromium's
+   UA stylesheet also resets text-rendering on them, which undoes geometricPrecision: text in a button
+   then wraps at a different point on Linux than on Windows. */
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+    text-rendering: inherit;
+}
+
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    color: var(--muted);
+}
+
+.spinner {
+    width: 48px;
+    height: 48px;
+    border: 4px solid var(--border);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+#blazor-error-ui {
+    background: #fff3cd;
+    color: #856404;
+    padding: 1rem;
+    text-align: center;
+    display: none;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+}
+
+#blazor-error-ui.show,
+#blazor-error-ui[style*="display: block"] {
+    display: block;
+}
+
+/* The padding sits inside the 1100px box, as it does for main and the footer, so all three align. */
+header.app-header {
+    background: var(--primary);
+    color: var(--primary-contrast);
+    padding: 1.5rem 0;
+}
+
+header.app-header .inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+header.app-header h1 {
+    margin: 0;
+    font-size: 1.6rem;
+}
+
+header.app-header p {
+    margin: .35rem 0 0;
+    opacity: .9;
+}
+
+header.app-header a {
+    color: var(--primary-contrast);
+    text-decoration: underline;
+}
+
+header.app-header h1 a {
+    text-decoration: none;
+}
+
+main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+}
+
+footer.app-footer {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem 3rem;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+/* home entry cards */
+.entry-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+a.entry-card {
+    display: block;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.25rem 1.5rem;
+    color: var(--text);
+    text-decoration: none;
+}
+
+a.entry-card:hover {
+    border-color: var(--primary);
+}
+
+.entry-card h2 {
+    margin: 0 0 .4rem;
+    font-size: 1.25rem;
+    color: var(--primary);
+}
+
+.entry-card p {
+    margin: 0;
+    color: var(--muted);
+}
+
+/* flow layout: the breadcrumb rail on the left, the step on the right */
+.wizard-layout {
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    gap: 1.5rem;
+    align-items: start;
+}
+
+.breadcrumb {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .75rem 0;
+}
+
+.breadcrumb-flow {
+    display: block;
+    padding: .25rem 1rem .6rem;
+    font-weight: 600;
+    color: var(--text);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: .4rem;
+}
+
+.breadcrumb ol {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.breadcrumb li > span,
+.breadcrumb .step-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .4rem 1rem;
+    border: none;
+    border-left: 3px solid transparent;
+    border-radius: 0;
+    background: none;
+    font: inherit;
+    color: var(--muted);
+}
+
+.breadcrumb .step-link {
+    cursor: pointer;
+}
+
+.breadcrumb .step-link:hover {
+    background: var(--bg);
+}
+
+.breadcrumb .step-title {
+    display: block;
+    font-size: .88rem;
+}
+
+.breadcrumb .step-value {
+    display: block;
+    color: var(--text);
+    font-weight: 600;
+}
+
+.breadcrumb li.current > span {
+    border-left-color: var(--primary);
+    color: var(--text);
+    font-weight: 600;
+}
+
+.breadcrumb li.future > span {
+    opacity: .6;
+}
+
+/* Narrow screens: a horizontal strip of the chosen values above the step. */
+@media (max-width: 768px) {
+    .wizard-layout {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .breadcrumb {
+        overflow-x: auto;
+        padding: .4rem .5rem;
+    }
+
+    .breadcrumb-flow {
+        display: none;
+    }
+
+    .breadcrumb ol {
+        display: flex;
+        gap: .25rem;
+        white-space: nowrap;
+    }
+
+    .breadcrumb li.future {
+        display: none;
+    }
+
+    .breadcrumb li {
+        display: flex;
+        align-items: center;
+    }
+
+    .breadcrumb li + li::before {
+        content: '›';
+        color: var(--muted);
+    }
+
+    .breadcrumb li > span,
+    .breadcrumb .step-link {
+        border-left: none;
+        padding: .2rem .5rem;
+    }
+
+    .breadcrumb .step-title {
+        display: none;
+    }
+
+    .breadcrumb li.current .step-title {
+        display: block;
+    }
+}
+
+/* step body */
+.step-body {
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+}
+
+.step-body h2 {
+    margin-top: 0;
+}
+
+.field {
+    margin-bottom: 1.1rem;
+}
+
+.field > label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: .3rem;
+}
+
+.field .hint,
+.hint {
+    color: var(--muted);
+    font-size: .88rem;
+    margin: .2rem 0 .4rem;
+}
+
+input[type="text"],
+input[type="url"],
+input[type="date"],
+select {
+    width: 100%;
+    max-width: 460px;
+    padding: .5rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 1rem;
+}
+
+.check {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    margin-bottom: .75rem;
+}
+
+.check input {
+    margin-top: .3rem;
+}
+
+.radio-row {
+    display: flex;
+    align-items: flex-start;
+    gap: .5rem;
+    margin-bottom: .5rem;
+}
+
+.radio-row input {
+    margin-top: .3rem;
+}
+
+.radio-row label {
+    font-weight: 600;
+}
+
+.radio-row .hint {
+    font-weight: 400;
+    margin: 0;
+}
+
+/* The outcome is rendered markdown, so it arrives wrapped in a <p>. At the .hint font size the default
+   1em margins are fractional pixels, which Windows and Linux round differently; whole pixels keep the
+   page height, and so the screenshots, identical. */
+.outcome {
+    margin: 16px 0;
+}
+
+.outcome p {
+    margin: 0;
+}
+
+.validation-error {
+    color: #d1242f;
+    font-size: .88rem;
+    margin: .2rem 0;
+}
+
+.callout {
+    border: 1px solid var(--warn-border);
+    background: var(--warn-bg);
+    border-radius: 6px;
+    padding: .6rem .9rem;
+    margin: .75rem 0;
+    font-size: .92rem;
+}
+
+
+/* choice cards */
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.mode-card {
+    text-align: left;
+    padding: .8rem 1rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--bg);
+    cursor: pointer;
+    font: inherit;
+    color: var(--text);
+}
+
+.mode-card.selected {
+    border-color: var(--primary);
+    outline: 1px solid var(--primary);
+}
+
+.mode-card strong {
+    display: block;
+    margin-bottom: .2rem;
+}
+
+.mode-card span {
+    color: var(--muted);
+    font-size: .88rem;
+}
+
+/* nav buttons */
+.wizard-nav {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+button {
+    font: inherit;
+    padding: .55rem 1.2rem;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--panel);
+    color: var(--text);
+    cursor: pointer;
+}
+
+.step-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+button.skip {
+    background: transparent;
+}
+
+button.primary {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-contrast);
+    font-weight: 600;
+}
+
+button:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+/* output */
+.output-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem;
+    margin-bottom: 1rem;
+}
+
+.output-header h2 {
+    margin: 0;
+}
+
+.output-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    margin: 1rem 0;
+}
+
+.tabs {
+    display: flex;
+    gap: .25rem;
+    border-bottom: 1px solid var(--border);
+    margin-top: 1rem;
+}
+
+.tabs .tab {
+    border: 1px solid transparent;
+    border-bottom: none;
+    border-radius: 6px 6px 0 0;
+    background: none;
+}
+
+.tabs .tab.selected {
+    border-color: var(--border);
+    background: var(--panel);
+    font-weight: 600;
+    margin-bottom: -1px;
+}
+
+.tab-panel {
+    padding-top: 1rem;
+}
+
+.file-browser {
+    display: grid;
+    grid-template-columns: minmax(0, 18rem) minmax(0, 1fr);
+    gap: 1rem;
+    align-items: start;
+}
+
+.file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font-size: .85rem;
+}
+
+.file-link {
+    display: block;
+    width: 100%;
+    text-align: left;
+    padding: .2rem .4rem;
+    border: none;
+    background: none;
+    font-family: 'Wizard Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+}
+
+.file-root {
+    margin: 0 0 .25rem;
+    padding: 0 .4rem;
+    font-family: 'Wizard Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: .85rem;
+    color: var(--muted);
+}
+
+.file-link.selected {
+    background: var(--bg);
+    font-weight: 600;
+}
+
+pre.ai-markdown {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: .85rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    font-size: .85rem;
+}
+
+.markdown pre {
+    background: var(--code-bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: .75rem;
+    overflow-x: auto;
+    font-size: .85rem;
+}
+
+.markdown img {
+    max-width: 100%;
+}
+
+.markdown code {
+    font-size: .9em;
+}
+
+.code-box {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    overflow: hidden;
+    margin: .75rem 0;
+}
+
+.code-box-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: .4rem .75rem;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+}
+
+.code-box-title {
+    font-size: .85rem;
+    font-weight: 600;
+    color: var(--muted);
+}
+
+.copy-button {
+    padding: .2rem .7rem;
+    font-size: .8rem;
+}
+
+.code-box-content {
+    margin: 0;
+    padding: .85rem;
+    background: var(--code-bg);
+    overflow-x: auto;
+    font-family: 'Wizard Mono', ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+    font-size: .85rem;
+    white-space: pre;
+    tab-size: 2;
+}
+
+/* feature step */
+.feature-search {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin: 1rem 0;
+}
+
+.feature-search label {
+    font-weight: 600;
+    font-size: .9rem;
+}
+
+.feature-search input {
+    flex: 1;
+    max-width: 24rem;
+    padding: .4rem .6rem;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+    font: inherit;
+}
+
+.selected-count {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.feature-category {
+    margin: 1.5rem 0;
+}
+
+.feature-category h3 {
+    margin: 0 0 .6rem;
+    font-size: 1rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.feature-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: .75rem;
+}
+
+.feature-card {
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+    padding: .75rem .9rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.feature-card:hover {
+    border-color: var(--primary);
+}
+
+.feature-card.selected {
+    border-color: var(--accent);
+    box-shadow: inset 3px 0 0 var(--accent);
+}
+
+.feature-card input {
+    margin-top: .2rem;
+}
+
+.feature-body {
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+}
+
+.feature-name {
+    font-weight: 600;
+}
+
+.feature-description {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .3rem;
+    margin-top: .1rem;
+}
+
+.badge {
+    padding: .1rem .45rem;
+    border: 1px solid var(--warn-border);
+    background: var(--warn-bg);
+    border-radius: 999px;
+    font-size: .75rem;
+    color: var(--text);
+}
+
+/* interaction notices */
+.interactions {
+    display: flex;
+    flex-direction: column;
+    gap: .6rem;
+    margin: 1rem 0;
+}
+
+.interaction-notice {
+    padding: .7rem .9rem;
+    border: 1px solid var(--border);
+    border-left-width: 4px;
+    border-radius: 6px;
+    background: var(--panel);
+}
+
+.interaction-notice.conflict {
+    border-left-color: #cf222e;
+}
+
+.interaction-notice.warning {
+    border-left-color: var(--warn-border);
+}
+
+.interaction-notice.info {
+    border-left-color: var(--link);
+}
+
+.interaction-heading {
+    margin: 0 0 .3rem;
+    display: flex;
+    gap: .5rem;
+    align-items: baseline;
+    font-size: .85rem;
+}
+
+.interaction-heading .severity {
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+}
+
+.interaction-heading .involved {
+    color: var(--muted);
+}
+
+.interaction-notice p {
+    margin: 0;
+}
+
+.interaction-notice ul {
+    margin: .5rem 0 0;
+    padding-left: 1.2rem;
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+/* options step */
+.depth-rows {
+    display: flex;
+    flex-direction: column;
+    gap: .4rem;
+    margin: 1rem 0;
+}
+
+.depth-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas: "name toggle" "count toggle";
+    gap: .2rem .75rem;
+    align-items: center;
+    padding: .6rem .9rem;
+    background: var(--panel);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+}
+
+.depth-name {
+    grid-area: name;
+    font-weight: 600;
+}
+
+.depth-count {
+    grid-area: count;
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+.depth-toggle {
+    grid-area: toggle;
+    display: flex;
+}
+
+.depth-option {
+    padding: .3rem .8rem;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    font: inherit;
+    font-size: .85rem;
+    cursor: pointer;
+}
+
+.depth-option:first-child {
+    border-radius: 6px 0 0 6px;
+}
+
+.depth-option:last-child {
+    border-radius: 0 6px 6px 0;
+    border-left: none;
+}
+
+.depth-option.selected {
+    background: var(--primary);
+    color: var(--primary-contrast);
+    border-color: var(--primary);
+}
+
+.choice {
+    margin: 1rem 0;
+    padding: .75rem .9rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+}
+
+.choice legend {
+    padding: 0 .4rem;
+    font-weight: 600;
+}
+
+.choice .hint {
+    margin: 0 0 .6rem;
+}
+
+.choice-option {
+    display: flex;
+    gap: .6rem;
+    align-items: flex-start;
+    padding: .45rem .5rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.choice-option.selected {
+    background: var(--code-bg);
+}
+
+.choice-option span {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+}
+
+.choice-hint {
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+/* tech step */
+.tech-group {
+    margin: 1rem 0;
+    padding: 0;
+    border: none;
+}
+
+.tech-group legend {
+    margin-bottom: .5rem;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    font-size: .85rem;
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .4rem;
+}
+
+.chip {
+    padding: .35rem .8rem;
+    border: 1px solid var(--border);
+    border-radius: 999px;
+    background: var(--panel);
+    color: var(--text);
+    font: inherit;
+    font-size: .9rem;
+    cursor: pointer;
+}
+
+.chip:hover {
+    border-color: var(--primary);
+}
+
+.chip.selected {
+    background: var(--primary);
+    border-color: var(--primary);
+    color: var(--primary-contrast);
+}
+
+/* feature card states */
+.existing-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr));
+    gap: .4rem 1.5rem;
+}
+
+.existing-item {
+    display: flex;
+    gap: .5rem;
+    align-items: center;
+    padding: .3rem .4rem;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.existing-item span {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.existing-item.selected {
+    background: var(--code-bg);
+}
+
+.feature-card.existing {
+    opacity: .7;
+    cursor: default;
+}
+
+.feature-card.unavailable {
+    opacity: .45;
+    cursor: not-allowed;
+}
+
+.feature-card.unavailable:hover {
+    border-color: var(--border);
+}
+
+.feature-tag {
+    font-size: .8rem;
+    color: var(--accent);
+    font-weight: 600;
+}
+
+.feature-category.suggested h3 {
+    color: var(--accent);
+}
+
+.restored {
+    display: inline-block;
+    margin: 0 0 .75rem;
+    padding: .2rem .6rem;
+    border-radius: 6px;
+    background: var(--code-bg);
+    color: var(--muted);
+    font-size: .85rem;
+}
+
+.link-button {
+    padding: 0;
+    border: none;
+    background: none;
+    color: var(--link);
+    font: inherit;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.choice-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1rem 0;
+}

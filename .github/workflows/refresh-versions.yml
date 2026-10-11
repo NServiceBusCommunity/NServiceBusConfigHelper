@@ -1,0 +1,79 @@
+name: Refresh package versions
+
+# Moves every package in src/Wizard.Core/Versions/package-versions.json to its newest stable version
+# on nuget.org, then opens a pull request. A pinned package stays where it is.
+#
+# A pull request opened with GITHUB_TOKEN does not trigger other workflows, so integration.yml would
+# never run for it. This workflow builds every generated solution against the new versions itself, and
+# puts the result in the pull request, so a bump that breaks a sample is visible before it is merged.
+# The test job runs on Windows, the only OS this repo's tests support.
+on:
+  schedule:
+    - cron: '0 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: refresh-versions
+  cancel-in-progress: false
+
+jobs:
+  refresh:
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          global-json-file: global.json
+
+      - name: Refresh versions
+        id: refresh
+        run: dotnet run --project src/Wizard.VersionRefresh --configuration Release -- src/Wizard.Core/Versions/package-versions.json refresh-summary.md
+
+      - name: Build test project
+        if: steps.refresh.outputs.changed == 'true'
+        run: dotnet build src/Wizard.Tests --configuration Release
+
+      # Every generated solution has to build against the new versions. A failure does not
+      # stop the pull request: it stays open, marked, until the registry code is fixed.
+      - name: Build every generated solution
+        id: integration
+        if: steps.refresh.outputs.changed == 'true'
+        continue-on-error: true
+        shell: pwsh
+        run: |
+          dotnet run --project src/Wizard.Tests --configuration Release --no-build -- --no-ansi --progress off --treenode-filter "/*/*/GeneratedSolutionTests/*" *> integration.log
+          $code = $LASTEXITCODE
+          Get-Content integration.log -Tail 60
+          exit $code
+
+      - name: Add the integration result to the pull request
+        if: steps.refresh.outputs.changed == 'true'
+        shell: pwsh
+        run: |
+          if ('${{ steps.integration.outcome }}' -eq 'success') {
+            Add-Content refresh-summary.md "`nEvery generated solution builds with these versions, and the learning endpoint runs."
+            Add-Content $env:GITHUB_ENV 'PR_TITLE=Refresh package versions'
+          } else {
+            $failed = Select-String -Path integration.log -Pattern '^failed ' | ForEach-Object { '- ' + $_.Line }
+            Add-Content refresh-summary.md "`n**Some generated solutions fail with these versions.** Fix the registry code before merging:`n"
+            Add-Content refresh-summary.md ($failed -join "`n")
+            Add-Content $env:GITHUB_ENV 'PR_TITLE=Refresh package versions (generated solutions failing)'
+          }
+
+      - name: Open pull request
+        if: steps.refresh.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: refresh/package-versions
+          delete-branch: true
+          add-paths: src/Wizard.Core/Versions/package-versions.json
+          commit-message: Refresh package versions
+          title: ${{ env.PR_TITLE }}
+          body-path: refresh-summary.md

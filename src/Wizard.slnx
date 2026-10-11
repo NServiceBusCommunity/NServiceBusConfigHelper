@@ -1,0 +1,21 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="../.gitattributes" />
+    <File Path="../.gitignore" />
+    <File Path="../readme.md" />
+    <File Path="../claude.md" />
+    <File Path="../.editorconfig" />
+    <File Path="Directory.Build.props" />
+    <File Path="Directory.Packages.props" />
+    <File Path="../global.json" />
+    <File Path="nuget.config" />
+    <File Path="../.github/workflows/deploy.yml" />
+    <File Path="../.github/workflows/integration.yml" />
+    <File Path="../.github/workflows/refresh-versions.yml" />
+    <File Path="../.github/dependabot.yml" />
+  </Folder>
+  <Project Path="Wizard.Core/Wizard.Core.csproj" />
+  <Project Path="Wizard.Web/Wizard.Web.csproj" />
+  <Project Path="Wizard.Tests/Wizard.Tests.csproj" />
+  <Project Path="Wizard.VersionRefresh/Wizard.VersionRefresh.csproj" />
+</Solution>

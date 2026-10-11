@@ -1,0 +1,326 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="serializer">
+                  <span class="step-title">Serializer</span>
+                  <span class="step-value">System.Text.Json</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="tests">
+                  <span class="step-title">Tests</span>
+                  <span class="step-value">xUnit v3</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="features">
+                  <span class="step-title">Features</span>
+                  <span class="step-value">3 features</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="options">
+                  <span class="step-title">Options</span>
+                  <span class="step-value">Defaults</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="output">
+            <div class="step-heading">
+              <h2>Result</h2>
+            </div>
+            <div class="field">
+              <label for="solutionName">Endpoint name</label>
+              <p class="hint">Used for the solution, the project, the namespace, and the endpoint's queue on the transport.</p>
+              <input type="text" id="solutionName">
+            </div>
+            <p class="hint versions" data-versions="live">Package versions are the newest stable releases on nuget.org.</p>
+            <div class="output-actions">
+              <button type="button" class="primary download-zip">Download solution (.zip)</button>
+              <button type="button" class="copy-guide">Copy guide as markdown</button>
+              <button type="button" class="download-guide">Download guide (.md)</button>
+              <button type="button" class="copy-ai">Copy AI instructions</button>
+              <button type="button" class="download-ai">Download AI instructions (.md)</button>
+              <button type="button" class="copy-link">Copy link to this page</button>
+            </div>
+            <div class="tabs" role="tablist">
+              <button type="button" role="tab" id="tab-Guide" class="tab selected" aria-selected="true">Guide</button>
+              <button type="button" role="tab" id="tab-Files" class="tab " aria-selected="false">Files</button>
+              <button type="button" role="tab" id="tab-AI" class="tab " aria-selected="false">AI</button>
+            </div>
+            <div class="tab-panel" role="tabpanel" aria-labelledby="tab-Guide">
+              <div class="markdown">
+                <h1 id="sampleendpoint">SampleEndpoint</h1>
+                <p>An NServiceBus endpoint generated by the
+                  <a href="https://nservicebuscommunity.github.io/NServiceBusConfigHelper/new?step=output&amp;host=Worker&amp;transport=RabbitMQ&amp;persistence=PostgreSql&amp;serializer=SystemJson&amp;tests=XunitV3&amp;features=Sagas,Outbox,Serilog">NServiceBus wizard</a>. That link reopens the wizard with the same answers.</p>
+                <h2 id="what-is-in-the-solution">What is in the solution</h2>
+                <ul>
+                  <li>
+                    <code>src/SampleEndpoint</code>: the endpoint
+                    <code>SampleEndpoint</code>, hosted as a worker service.</li>
+                  <li>
+                    <code>src/SampleEndpoint.Tests</code>: xUnit v3 tests.</li>
+                  <li>
+                    <code>docker-compose.yml</code>: RabbitMQ and PostgreSQL, for running locally.</li>
+                  <li>
+                    <code>CLAUDE.md</code>
+                    and
+                    <code>.github/copilot-instructions.md</code>: the same facts as this guide, written for an AI coding assistant.</li>
+                  <li>Transport:
+                    <a href="https://docs.particular.net/transports/rabbitmq/">RabbitMQ</a>.</li>
+                  <li>Persistence:
+                    <a href="https://docs.particular.net/persistence/sql/">PostgreSQL</a>.</li>
+                  <li>Serializer:
+                    <a href="https://docs.particular.net/nservicebus/serialization/system-json">System.Text.Json</a>.</li>
+                  <li>Features: Sagas, Outbox, Serilog.</li>
+                </ul>
+                <p>Package versions: the newest stable release of each on nuget.org when this was generated.</p>
+                <h2 id="before-the-first-run">Before the first run</h2>
+                <ol>
+                  <li>Install the .NET SDK 10.0.401 or a later feature band;
+                    <code>global.json</code>
+                    pins it.</li>
+                  <li>Start the containers the endpoint needs:
+                    <code>docker compose up -d</code>. Their passwords are in
+                    <code>docker-compose.yml</code>
+                    and
+                    <code>appsettings.json</code>
+                    in the clear, which is fine for a container on a developer's machine and nowhere else.</li>
+                  <li>NServiceBus is licensed by Particular Software. See
+                    <a href="https://docs.particular.net/nservicebus/licensing/">licensing</a>
+                    for the options and for where the licence file goes.</li>
+                </ol>
+                <h2 id="run-it">Run it</h2>
+                <pre><code class="language-sh">dotnet run --project src/SampleEndpoint
+</code></pre>
+                <p>On startup
+                  <code>SampleOrders</code>
+                  submits one order. The log shows
+                  <code>PlaceOrder</code>
+                  being handled, and the
+                  <code>OrderPlaced</code>
+                  event it publishes being handled in turn.</p>
+                <h2 id="how-the-endpoint-is-configured">How the endpoint is configured</h2>
+                <p>All of it is in
+                  <code>src/SampleEndpoint/Program.cs</code>, in the order below.</p>
+                <h3 id="transport-rabbitmq">Transport: RabbitMQ</h3>
+                <p>A broker to run anywhere. Native publish and subscribe, and delayed delivery.
+                  <a href="https://docs.particular.net/transports/rabbitmq/">Documentation</a>.</p>
+                <pre><code class="language-cs">var transport = new RabbitMQTransport(
+    RoutingTopology.Conventional(QueueType.Quorum),
+    rabbitMqConnectionString);
+</code></pre>
+                <ul>
+                  <li>RabbitMQ queue type: Quorum queues. Replicated across the cluster's nodes. What NServiceBus recommends.</li>
+                  <li>Reads the
+                    <code>RabbitMQ</code>
+                    connection string. The broker's host and credentials, in
+                    <a href="https://docs.particular.net/transports/rabbitmq/connection-settings">the transport's connection string format</a>.</li>
+                  <li>The conventional routing topology creates one exchange per message type, and binds a queue to the events its endpoint handles.</li>
+                </ul>
+                <h3 id="persistence-postgresql">Persistence: PostgreSQL</h3>
+                <p>SQL persistence on PostgreSQL, storing saga data as jsonb.
+                  <a href="https://docs.particular.net/persistence/sql/">Documentation</a>.</p>
+                <pre><code class="language-cs">var persistence = endpointConfiguration.UsePersistence&lt;SqlPersistence&gt;();
+var dialect = persistence.SqlDialect&lt;SqlDialect.PostgreSql&gt;();
+// Saga data is stored as jsonb, which Npgsql has to be told for each parameter.
+dialect.JsonBParameterModifier(parameter =&gt;
+{
+    var npgsqlParameter = (NpgsqlParameter) parameter;
+    npgsqlParameter.NpgsqlDbType = NpgsqlDbType.Jsonb;
+});
+persistence.ConnectionBuilder(() =&gt; new NpgsqlConnection(postgreSqlConnectionString));
+</code></pre>
+                <ul>
+                  <li>Reads the
+                    <code>PostgreSql</code>
+                    connection string. A PostgreSQL database the endpoint can create tables in.</li>
+                  <li>SQL persistence generates its table scripts at build time, into
+                    <code>bin/&lt;Configuration&gt;/&lt;TargetFramework&gt;/NServiceBus.Persistence.Sql</code>. Installers run them on startup; without installers, run them as a deployment step.</li>
+                </ul>
+                <h3 id="serializer-system.text.json">Serializer: System.Text.Json</h3>
+                <p>Json with the serializer built into .NET. No extra package; the usual choice.
+                  <a href="https://docs.particular.net/nservicebus/serialization/system-json">Documentation</a>.</p>
+                <pre><code class="language-cs">endpointConfiguration.UseSerialization&lt;SystemJsonSerializer&gt;();
+</code></pre>
+                <h3 id="error-queue">Error queue</h3>
+                <p>A message that still fails after its retries is moved to the
+                  <code>error</code>
+                  queue, with the exception in its headers, so the endpoint can carry on with the next one.</p>
+                <pre><code class="language-cs">// Where a message goes once every retry has failed. ServiceControl reads this queue.
+endpointConfiguration.SendFailedMessagesTo("error");
+</code></pre>
+                <h3 id="installers">Installers</h3>
+                <p>The endpoint creates its queues, topics and tables when it starts. That is convenient in development. In production, run
+                  <a href="https://docs.particular.net/nservicebus/operations/installers">installers</a>
+                  as a deployment step instead, with rights the running endpoint does not need.</p>
+                <pre><code class="language-cs">// Creates the queues, topics and tables the endpoint needs when it starts. Convenient in development.
+// In production, run installers as a deployment step, with rights the running endpoint does not need.
+endpointConfiguration.EnableInstallers();
+</code></pre>
+                <h3 id="sagas">Sagas</h3>
+                <p>A long-running process with its own state: a sample saga that is started by an event and completes on a timeout.
+                  <a href="https://docs.particular.net/nservicebus/sagas/">Documentation</a>.</p>
+                <p>Files:
+                  <code>Sagas/OrderSaga.cs</code>,
+                  <code>Sagas/OrderSagaData.cs</code>,
+                  <code>Sagas/CancellationWindowElapsed.cs</code>.</p>
+                <ul>
+                  <li>A saga's state is stored by the persistence. Messages for one saga instance are handled one at a time: a concurrent update fails and is retried.</li>
+                  <li>A timeout is a message sent to the saga itself with a delay, so it survives a restart.</li>
+                </ul>
+                <h3 id="outbox">Outbox</h3>
+                <p>Stores a handler's outgoing messages with its data in one transaction, so a redelivered message is neither processed nor sent twice.
+                  <a href="https://docs.particular.net/nservicebus/outbox/">Documentation</a>.</p>
+                <pre><code class="language-cs">// The outbox takes over from the transport's transaction, which then only covers the receive.
+transport.TransportTransactionMode = TransportTransactionMode.ReceiveOnly;
+endpointConfiguration.EnableOutbox();
+</code></pre>
+                <ul>
+                  <li>With the outbox on, the transport has to receive in
+                    <code>ReceiveOnly</code>
+                    mode, which
+                    <code>Program.cs</code>
+                    sets on the transport: consistency between the data and the outgoing messages comes from the outbox record, not from a transaction spanning the queue and the database.</li>
+                </ul>
+                <h3 id="serilog">Serilog</h3>
+                <p>Logs through Serilog, with NServiceBus exception details as structured properties, and a log event for each message handled and sent. An NServiceBus Community extension.
+                  <a href="https://github.com/NServiceBusCommunity/NServiceBus.Community.Serilog">Documentation</a>.</p>
+                <pre><code class="language-cs">var loggerConfiguration = new LoggerConfiguration();
+loggerConfiguration.Enrich.WithNsbExceptionDetails();
+loggerConfiguration.WriteTo.Console();
+Log.Logger = loggerConfiguration.CreateLogger();
+
+// Serilog takes the place of the host's own providers, so each event is written once.
+builder.Logging.ClearProviders();
+builder.Logging.AddSerilog();
+
+var serilogTracing = endpointConfiguration.EnableSerilogTracing(Log.Logger);
+serilogTracing.EnableMessageTracing();
+</code></pre>
+                <ul>
+                  <li>Message tracing writes an event for every message received and sent, enriched with the message id, type, correlation id and conversation id. Inside a handler,
+                    <code>context.Logger()</code>
+                    is a logger that already carries them.</li>
+                </ul>
+                <h2 id="the-sample-messages">The sample messages</h2>
+                <ul>
+                  <li>
+                    <code>Messages/PlaceOrder.cs</code>
+                    is a command: a request for one endpoint to do something.</li>
+                  <li>
+                    <code>Messages/OrderPlaced.cs</code>
+                    is an event: something that has happened, which any number of endpoints can subscribe to.</li>
+                  <li>
+                    <code>Handlers/PlaceOrderHandler.cs</code>
+                    handles the command and publishes the event.
+                    <code>Handlers/OrderPlacedHandler.cs</code>
+                    handles the event, which is also what subscribes the endpoint to it.</li>
+                  <li>
+                    <code>OrderSubmitter.cs</code>
+                    sends the command from outside a handler, through
+                    <code>IMessageSession</code>. Inside a handler, always send and publish through the context the handler is given, so the outgoing messages belong to the message being handled.</li>
+                  <li>
+                    <code>SampleOrders.cs</code>
+                    submits one order on startup. Delete it, and its registration in
+                    <code>Program.cs</code>, once the endpoint has real work.</li>
+                </ul>
+                <h2 id="tests">Tests</h2>
+                <p>
+                  <code>src/SampleEndpoint.Tests</code>
+                  uses xUnit v3 and
+                  <a href="https://docs.particular.net/nservicebus/testing/">NServiceBus.Testing</a>, whose fakes record what a handler sends and publishes, so nothing needs a transport.</p>
+                <pre><code class="language-sh">dotnet test
+</code></pre>
+                <h2 id="worth-knowing">Worth knowing</h2>
+                <ul>
+                  <li>
+                    <strong>Serilog</strong>: Serilog is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to
+                    <a href="https://github.com/NServiceBusCommunity/Home#community-backed">become patrons</a>.</li>
+                </ul>
+                <h2 id="next-steps">Next steps</h2>
+                <ul>
+                  <li>Install
+                    <a href="https://docs.particular.net/servicecontrol/">ServiceControl and ServicePulse</a>
+                    to see failed messages and retry them.</li>
+                  <li>Snapshot test what a handler sends with Verify.NServiceBus; the
+                    <a href="https://verifytests.github.io/Wizard/add/NServiceBus">Verify wizard</a>
+                    sets it up.</li>
+                  <li>Add another feature later with the
+                    <a href="https://nservicebuscommunity.github.io/NServiceBusConfigHelper/add">add flow</a>, which generates only what has to be merged.</li>
+                </ul>
+              </div>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

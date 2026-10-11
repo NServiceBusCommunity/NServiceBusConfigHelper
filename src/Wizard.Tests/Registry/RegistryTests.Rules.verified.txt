@@ -1,0 +1,36 @@
+﻿{
+  both attachment stores: [
+    Conflict attachments-storage [SQL attachments, File share attachments] Both attachment packages define the same `Attachments()` extension methods, so a project that references both does not compile. Choose one place to keep attachments.,
+    Info community-backing [SQL attachments, File share attachments] SQL attachments and File share attachments are NServiceBus Community extensions: MIT licensed, and developers who use them are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).,
+    Info development-only [Learning transport, Learning persistence] The Learning transport and Learning persistence are for development. Choose a production one before deploying.
+  ],
+  everything: [
+    Warning service-control [Heartbeats, Custom checks, Performance metrics, Saga audit] Heartbeats, Custom checks, Performance metrics and Saga audit send to ServiceControl's queues. Until [ServiceControl](https://docs.particular.net/servicecontrol/) has been installed and has created them, those messages have nowhere to go.,
+    Info community-backing [Handler ordering, Audit filter, Serilog, FluentValidation, DataAnnotations, SQL attachments] Handler ordering, Audit filter, Serilog, FluentValidation, DataAnnotations and SQL attachments are NServiceBus Community extensions: MIT licensed, and developers who use them are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).
+  ],
+  one sql server database: [
+    Info shared-database [SQL Server transport, SQL Server persistence] The transport and the persistence are in one database, on one connection string. SQL persistence then uses the connection and transaction the transport receives the message on, so the data and the messages a handler sends commit together without the outbox; see [combining SQL Server persistence and transport](https://docs.particular.net/persistence/sql/sqlserver-combining-persistence-wth-transport).
+  ],
+  outbox on cosmos: [
+    Warning outbox-partition-key [Outbox, Azure Cosmos DB] With Cosmos DB the outbox record gets a partition key made from the endpoint name and the message id unless one is mapped. A handler that also writes its own documents needs them in the same partition to commit with the outbox record: map the key with `persistence.TransactionInformation()`; see [transactions](https://docs.particular.net/persistence/cosmosdb/transactions).
+  ],
+  requirements missing, add: [
+    Warning needs-auditing [Audit filter, Auditing] Audit filter configures Auditing. If the endpoint does not have it yet, select it here as well.,
+    Info community-backing [Audit filter] Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).
+  ],
+  requirements missing, new: [
+    Conflict needs-auditing [Audit filter, Auditing] Audit filter configures Auditing, so Auditing has to be selected too.,
+    Conflict needs-sagas [Saga audit, Sagas] Saga audit configures Sagas, so Sagas has to be selected too.,
+    Warning service-control [Saga audit] Saga audit sends to ServiceControl's queues. Until [ServiceControl](https://docs.particular.net/servicecontrol/) has been installed and has created them, those messages have nowhere to go.,
+    Info community-backing [Audit filter] Audit filter is an NServiceBus Community extension: MIT licensed, and developers who use it are expected to [become patrons](https://github.com/NServiceBusCommunity/Home#community-backed).,
+    Info development-only [Learning transport, Learning persistence] The Learning transport and Learning persistence are for development. Choose a production one before deploying.
+  ],
+  send-only alone: [
+    Info development-only [Learning transport] The Learning transport is for development. Choose a production one before deploying.,
+    Info send-only-persistence [Send-only] A send-only endpoint has no sagas, no outbox and no subscriptions, so it stores nothing: the generated endpoint configures no persistence.
+  ],
+  send-only with receiving features: [
+    Conflict send-only [Send-only, Sagas, Auditing] A send-only endpoint never receives a message, so Sagas and Auditing would do nothing. Remove Send-only, or remove them.,
+    Info development-only [Learning transport] The Learning transport is for development. Choose a production one before deploying.
+  ]
+}

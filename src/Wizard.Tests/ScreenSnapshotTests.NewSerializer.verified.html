@@ -1,0 +1,108 @@
+﻿<!DOCTYPE html>
+<html lang="en" style="--blazor-load-percentage: 100%; --blazor-load-percentage-text: &quot;100%&quot;;">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <base href="/">
+    <link rel="icon" href="favicon.png" type="image/png">
+    <link rel="preload" href="css/app.css" as="style">
+    <link rel="preload" href="fonts/open-sans.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="fonts/ubuntu-mono.woff2" as="font" type="font/woff2" crossorigin="">
+    <link rel="preload" href="_framework/blazor.webassembly.js" as="script">
+    <link rel="stylesheet" href="css/app.css">
+    <title>New endpoint · NServiceBus Wizard</title>
+  </head>
+  <body>
+    <div id="app">
+      <header class="app-header">
+        <div class="inner">
+          <h1>
+            <a href="">NServiceBus Wizard</a>
+          </h1>
+          <p>Configure an
+            <a href="https://docs.particular.net/nservicebus/" target="_blank">NServiceBus</a>
+            endpoint: a working solution, a guide, and instructions for an AI assistant.</p>
+        </div>
+      </header>
+      <main>
+        <div class="wizard-layout">
+          <nav class="breadcrumb" aria-label="Wizard progress">
+            <a class="breadcrumb-flow" href="">New endpoint</a>
+            <ol>
+              <li class="done">
+                <button type="button" class="step-link" data-step="host">
+                  <span class="step-title">Hosting</span>
+                  <span class="step-value">Worker service</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="transport">
+                  <span class="step-title">Transport</span>
+                  <span class="step-value">RabbitMQ</span>
+                </button>
+              </li>
+              <li class="done">
+                <button type="button" class="step-link" data-step="persistence">
+                  <span class="step-title">Persistence</span>
+                  <span class="step-value">PostgreSQL</span>
+                </button>
+              </li>
+              <li class="current" aria-current="step">
+                <span class="step-title">Serializer</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Tests</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Features</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Options</span>
+              </li>
+              <li class="future">
+                <span class="step-title">Result</span>
+              </li>
+            </ol>
+          </nav>
+          <section class="step-body" data-step="serializer">
+            <div class="step-heading">
+              <h2>Serializer</h2>
+            </div>
+            <p class="hint">How a message body is written. Endpoints that exchange messages have to be able to read each other's.</p>
+            <div class="mode-cards" role="radiogroup" aria-label="Serializer">
+              <button type="button" id="serializer-SystemJson" class="mode-card " role="radio" aria-checked="false">
+                <strong>System.Text.Json</strong>
+                <span>Json with the serializer built into .NET. No extra package; the usual choice.</span>
+              </button>
+              <button type="button" id="serializer-NewtonsoftJson" class="mode-card " role="radio" aria-checked="false">
+                <strong>Newtonsoft.Json</strong>
+                <span>Json with Json.NET, for systems whose messages already rely on its behaviour.</span>
+              </button>
+              <button type="button" id="serializer-Xml" class="mode-card " role="radio" aria-checked="false">
+                <strong>XML</strong>
+                <span>The XML serializer built into NServiceBus, for older systems that already exchange XML.</span>
+              </button>
+            </div>
+            <div class="wizard-nav">
+              <button type="button" class="back">Back</button>
+              <button type="button" class="primary" disabled="">Next: Tests</button>
+            </div>
+          </section>
+        </div>
+      </main>
+      <footer class="app-footer">
+        Full documentation is at
+        <a href="https://docs.particular.net" target="_blank">docs.particular.net</a>. The extensions are from
+        <a href="https://github.com/NServiceBusCommunity/Home" target="_blank">NServiceBus Community</a>. Wizard source:
+        <a href="https://github.com/NServiceBusCommunity/NServiceBusConfigHelper" target="_blank">NServiceBusCommunity/NServiceBusConfigHelper</a>.
+      </footer>
+    </div>
+    <div id="blazor-error-ui">
+      An unhandled error has occurred.
+      <a href="" class="reload">Reload</a>
+      <a class="dismiss">X</a>
+    </div>
+    <script src="_framework/blazor.webassembly.js"></script>
+    <script src="js/interop.js"></script>
+  </body>
+</html>

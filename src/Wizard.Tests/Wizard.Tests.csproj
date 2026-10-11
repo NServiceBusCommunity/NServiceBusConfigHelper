@@ -1,0 +1,36 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>$(GeneratedTargetFramework)</TargetFramework>
+    <OutputType>Exe</OutputType>
+    <BlazorPublishDir>$(MSBuildThisFileDirectory)bin\$(Configuration)\blazor-publish\</BlazorPublishDir>
+  </PropertyGroup>
+
+  <!-- Publish the Blazor app after build so the Playwright tests serve the real (trimmed) output. -->
+  <Target Name="PublishBlazorForTests" AfterTargets="Build">
+    <MSBuild Projects="..\Wizard.Web\Wizard.Web.csproj"
+             Targets="Publish"
+             Properties="Configuration=$(Configuration);PublishDir=$(BlazorPublishDir)" />
+  </Target>
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    <ProjectReference Include="..\Wizard.Web\Wizard.Web.csproj" />
+    <ProjectReference Include="..\Wizard.Core\Wizard.Core.csproj" />
+    <ProjectReference Include="..\Wizard.VersionRefresh\Wizard.VersionRefresh.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="TUnit" />
+    <PackageReference Include="bunit" />
+    <PackageReference Include="Verify.Bunit" />
+    <PackageReference Include="Verify.TUnit" />
+    <PackageReference Include="Verify" />
+    <PackageReference Include="Verify.AngleSharp" />
+    <PackageReference Include="Microsoft.Playwright" />
+    <PackageReference Include="Verify.Playwright" />
+    <PackageReference Include="DiffEngine" />
+    <PackageReference Include="ProjectDefaults" PrivateAssets="all" />
+  </ItemGroup>
+
+</Project>
