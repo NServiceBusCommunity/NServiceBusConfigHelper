@@ -14,7 +14,6 @@ for any features: sagas, the outbox, auditing and monitoring, OpenTelemetry, and
 A second entry point adds features to an existing endpoint, and produces only what has to be merged in.
 
 The site is a Blazor WebAssembly app that runs entirely in the browser; nothing is sent to a server.
-It is based on the [Verify wizard](https://github.com/VerifyTests/Wizard).
 
 
 ## Running locally
