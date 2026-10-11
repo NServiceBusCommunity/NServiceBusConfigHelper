@@ -191,7 +191,7 @@ public class RegistryTests
         var blocked = GeneratorTests.WithFeatures(GeneratorTests.State(), "SendOnly", "Sagas", "Auditing", "Recoverability", "AuditFilter", "Heartbeats");
         var results = InteractionRules.For(blocked);
         await Assert.That(results.Where(_ => _.Severity != Severity.Conflict).SelectMany(_ => _.Marks)).IsEmpty();
-        await Assert.That(results.Where(_ => _.Severity == Severity.Conflict && _.Marks.Count == 0)).IsEmpty();
+        await Assert.That(results.Where(_ => _ is {Severity: Severity.Conflict, Marks.Count: 0})).IsEmpty();
 
         var marks = InteractionRules.Marks(results);
         // a badge has no room for a list of four

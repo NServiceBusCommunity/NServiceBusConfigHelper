@@ -104,16 +104,15 @@ public class EndToEndTests
             {
                 Name = PackagesProps.FileName,
                 MimeType = "text/xml",
-                Buffer = Encoding.UTF8.GetBytes(
-                    """
-                    <Project>
-                      <ItemGroup>
-                        <PackageVersion Include="NServiceBus.Transport.SqlServer" Version="1.0.0" />
-                        <PackageVersion Include="NServiceBus.Persistence.Sql" Version="1.0.0" />
-                        <PackageVersion Include="Microsoft.Data.SqlClient" Version="1.0.0" />
-                      </ItemGroup>
-                    </Project>
-                    """)
+                Buffer = """
+                         <Project>
+                           <ItemGroup>
+                             <PackageVersion Include="NServiceBus.Transport.SqlServer" Version="1.0.0" />
+                             <PackageVersion Include="NServiceBus.Persistence.Sql" Version="1.0.0" />
+                             <PackageVersion Include="Microsoft.Data.SqlClient" Version="1.0.0" />
+                           </ItemGroup>
+                         </Project>
+                         """u8.ToArray()
             });
 
         await page.WaitForSelectorAsync(".packages-result");
