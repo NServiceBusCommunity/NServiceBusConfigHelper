@@ -83,5 +83,3 @@ static async Task<IReadOnlyList<string>?> Fetch(HttpClient client, string id)
 
     return null;
 }
-
-sealed record PackageVersionsDocument(Dictionary<string, string> Packages);
