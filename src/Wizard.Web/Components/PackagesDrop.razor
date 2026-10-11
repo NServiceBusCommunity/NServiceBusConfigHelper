@@ -1,0 +1,86 @@
+@* Answers the add flow's transport and persistence from the solution's Directory.Packages.props.
+   The file input covers the whole zone, so the browser's own handling of a click and of a drop
+   does both jobs, and no script is needed. *@
+<div class="packages-drop @(dragging ? "dragging" : "")"
+     @ondragenter="() => dragging = true"
+     @ondragleave="() => dragging = false"
+     @ondrop="() => dragging = false">
+    <InputFile @key="inputKey"
+               id="packagesProps"
+               aria-label="@PackagesProps.FileName"
+               accept=".props"
+               OnChange="FileChosen" />
+    <span>
+        <strong>Drop a <code>@PackagesProps.FileName</code> here, or click to browse.</strong>
+        The transport and the persistence it references are chosen. It is read in this browser and is not uploaded.
+    </span>
+</div>
+
+@if (result != null)
+{
+    <p class="packages-result @(result.Failed ? "failed" : "")"><strong>@result.FileName</strong>: @result.Message</p>
+}
+
+@code {
+    const long maximumFileSize = 1024 * 1024;
+
+    [Parameter, EditorRequired] public WizardState State { get; set; } = null!;
+    [Parameter] public EventCallback Changed { get; set; }
+
+    bool dragging;
+    int inputKey;
+    FileResult? result;
+
+    record FileResult(string FileName, string Message, bool Failed = false);
+
+    async Task FileChosen(InputFileChangeEventArgs args)
+    {
+        dragging = false;
+        // a new input, so choosing the same file again raises the change again
+        inputKey++;
+        result = await Read(args.File);
+        await Changed.InvokeAsync();
+    }
+
+    /// <summary>Sets what the file singles out, and leaves the rest as it was.</summary>
+    async Task<FileResult> Read(IBrowserFile file)
+    {
+        if (!file.Name.EndsWith(".props", StringComparison.OrdinalIgnoreCase))
+        {
+            return new(file.Name, $"not a {PackagesProps.FileName}.", true);
+        }
+
+        if (file.Size > maximumFileSize)
+        {
+            return new(file.Name, $"too large to be a {PackagesProps.FileName}.", true);
+        }
+
+        using var reader = new StreamReader(file.OpenReadStream(maximumFileSize));
+        var xml = await reader.ReadToEndAsync();
+        if (!PackagesProps.TryRead(xml, out var transport, out var persistence))
+        {
+            return new(file.Name, "could not be read.", true);
+        }
+
+        State.Transport = transport ?? State.Transport;
+        State.Persistence = persistence ?? State.Persistence;
+
+        if (transport is { } foundTransport &&
+            persistence is { } foundPersistence)
+        {
+            return new(file.Name, $"found the {foundTransport.Name()} transport and {foundPersistence.Name()} persistence.");
+        }
+
+        if (transport is { } onlyTransport)
+        {
+            return new(file.Name, $"found the {onlyTransport.Name()} transport. Its packages do not single out a persistence.");
+        }
+
+        if (persistence is { } onlyPersistence)
+        {
+            return new(file.Name, $"found {onlyPersistence.Name()} persistence. Its packages do not single out a transport.");
+        }
+
+        return new(file.Name, "its packages do not single out a transport or a persistence.");
+    }
+}

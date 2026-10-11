@@ -1069,6 +1069,53 @@ pre.ai-markdown {
     color: var(--accent);
 }
 
+/* Directory.Packages.props, on the add flow's transport step */
+.packages-drop {
+    position: relative;
+    margin: 1rem 0;
+    padding: 1rem 1.25rem;
+    border: 2px dashed var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+    color: var(--muted);
+    font-size: .9rem;
+}
+
+.packages-drop strong {
+    display: block;
+    margin-bottom: .2rem;
+    color: var(--text);
+}
+
+.packages-drop input[type="file"] {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.packages-drop:hover,
+.packages-drop:focus-within,
+.packages-drop.dragging {
+    border-color: var(--primary);
+}
+
+.packages-drop.dragging {
+    background: var(--code-bg);
+}
+
+.packages-result {
+    margin: 0 0 1rem;
+    font-size: .9rem;
+    overflow-wrap: anywhere;
+}
+
+.packages-result.failed {
+    color: var(--muted);
+}
+
 .restored {
     display: inline-block;
     margin: 0 0 .75rem;

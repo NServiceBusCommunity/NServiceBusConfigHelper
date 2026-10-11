@@ -93,6 +93,35 @@ public class EndToEndTests
         await Assert.That(page.Url).Contains("/new?step=features&");
     }
 
+    /// <summary>The add flow reads a chosen Directory.Packages.props in the browser and answers its first two steps.</summary>
+    [Test]
+    public async Task APackagesPropsAnswersWhatTheEndpointRunsOn()
+    {
+        var page = await ScreenSnapshotTests.Open("/add", "#packagesProps");
+        await page.SetInputFilesAsync(
+            "#packagesProps",
+            new FilePayload
+            {
+                Name = PackagesProps.FileName,
+                MimeType = "text/xml",
+                Buffer = Encoding.UTF8.GetBytes(
+                    """
+                    <Project>
+                      <ItemGroup>
+                        <PackageVersion Include="NServiceBus.Transport.SqlServer" Version="1.0.0" />
+                        <PackageVersion Include="NServiceBus.Persistence.Sql" Version="1.0.0" />
+                        <PackageVersion Include="Microsoft.Data.SqlClient" Version="1.0.0" />
+                      </ItemGroup>
+                    </Project>
+                    """)
+            });
+
+        await page.WaitForSelectorAsync(".packages-result");
+        await Assert.That(await page.TextContentAsync(".packages-result"))
+            .IsEqualTo("Directory.Packages.props: found the SQL Server transport and SQL Server persistence.");
+        await Assert.That(page.Url).EndsWith("/add?step=transport&transport=SqlServer&persistence=SqlServer");
+    }
+
     /// <summary>
     /// An extension readme's deep link, in a browser that remembers what the endpoint runs on: the
     /// first two steps are already answered, and the download is the changes to merge.

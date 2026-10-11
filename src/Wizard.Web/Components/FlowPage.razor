@@ -37,6 +37,10 @@
                     {
                         <p class="restored">Restored from this browser.</p>
                     }
+                    @if (State.Flow == Flow.Add)
+                    {
+                        <PackagesDrop State="State" Changed="Changed" />
+                    }
                     <ChoiceCards TValue="Transport" Options="transportChoices" Value="State.Transport" ValueChanged="_ => SetAndAdvance(State.Transport == null, wizard => wizard.Transport = _)" IdPrefix="transport" Label="Transport" />
                     break;
                 case "persistence":
