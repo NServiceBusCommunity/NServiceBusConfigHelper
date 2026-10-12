@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-10",
+  "updated": "2026-10-12",
   "packages": {
     "Microsoft.Data.SqlClient": "7.1.1",
     "MSTest.TestAdapter": "4.5.1",
@@ -39,7 +39,7 @@
     "OpenTelemetry.Extensions.Hosting": "1.19.1",
     "Serilog.Extensions.Logging": "10.0.0",
     "Serilog.Sinks.Console": "6.1.1",
-    "TUnit": "1.73.19",
+    "TUnit": "1.74.0",
     "xunit.v3": "4.0.2"
   }
 }
