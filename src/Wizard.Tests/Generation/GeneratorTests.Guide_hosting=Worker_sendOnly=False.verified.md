@@ -15,7 +15,7 @@ Package versions: the newest stable releases as of 2026-10-01; nuget.org was not
 
 ## Before the first run
 
-1. Install the .NET SDK 10.0.401 or a later feature band; `global.json` pins it.
+1. Install the .NET SDK 10.0.402 or a later feature band; `global.json` pins it.
 2. NServiceBus is licensed by Particular Software. See [licensing](https://docs.particular.net/nservicebus/licensing/) for the options and for where the licence file goes.
 
 ## Run it
