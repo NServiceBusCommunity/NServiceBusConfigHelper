@@ -56,7 +56,7 @@ public class RegistryTests
     [Test]
     public async Task EveryPackageHasAVersion()
     {
-        var packages = Components.SelectMany(_ => _.Packages)
+        var packages = Components.SelectMany(_ => _.Packages.Concat(_.TransitivePins))
             .Concat(Enum.GetValues<TestFramework>().Select(TestFrameworkInfo.For).OfType<TestFrameworkInfo>().SelectMany(_ => _.Packages))
             .Append("NServiceBus")
             .Append("NServiceBus.Testing")

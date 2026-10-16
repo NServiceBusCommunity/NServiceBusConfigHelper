@@ -6,6 +6,7 @@
        https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>
   </PropertyGroup>
   <!-- NServiceBus -->
   <ItemGroup>
@@ -24,6 +25,10 @@
   <ItemGroup>
     <PackageVersion Include="xunit.v3" Version="1.0.0" />
     <PackageVersion Include="NServiceBus.Testing" Version="1.0.0" />
+  </ItemGroup>
+  <!-- Pinned above the version a dependency asks for, which has a known vulnerability -->
+  <ItemGroup>
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="1.0.0" />
   </ItemGroup>
 </Project>
 

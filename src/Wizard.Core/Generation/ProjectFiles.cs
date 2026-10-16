@@ -45,7 +45,15 @@ public static class ProjectFiles
 
     public static string DirectoryPackagesProps(Plan plan)
     {
-        var groups = PackageGroups(plan).Select(_ => Versions(_.Comment, _.Packages, plan));
+        var groups = PackageGroups(plan).Select(_ => Versions(_.Comment, _.Packages, plan)).ToList();
+        var pinning = "";
+        var pins = plan.TransitivePins;
+        if (pins.Count > 0)
+        {
+            pinning = "\n    <CentralPackageTransitivePinningEnabled>true</CentralPackageTransitivePinningEnabled>";
+            groups.Add(Versions("Pinned above the version a dependency asks for, which has a known vulnerability", pins, plan));
+        }
+
         return
             $"""
              <Project>
@@ -53,7 +61,7 @@ public static class ProjectFiles
                     packages with <PackageReference Include="..." /> and no Version.
                     https://learn.microsoft.com/en-us/nuget/consume-packages/central-package-management -->
                <PropertyGroup>
-                 <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+                 <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>{pinning}
                </PropertyGroup>
              {Lines(groups)}
              </Project>

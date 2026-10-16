@@ -39,6 +39,7 @@
     "OpenTelemetry.Extensions.Hosting": "1.19.1",
     "Serilog.Extensions.Logging": "10.0.0",
     "Serilog.Sinks.Console": "6.1.1",
+    "System.Security.Cryptography.Pkcs": "10.0.13",
     "TUnit": "1.73.19",
     "xunit.v3": "4.0.2"
   }

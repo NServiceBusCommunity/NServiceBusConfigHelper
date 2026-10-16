@@ -62,6 +62,7 @@ public static class Persistences
             Description = "SQL persistence on SQL Server, with plain ADO.NET and scripts generated at build time.",
             DocsUrl = sqlPersistence,
             Packages = ["NServiceBus.Persistence.Sql", "Microsoft.Data.SqlClient"],
+            TransitivePins = ["System.Security.Cryptography.Pkcs"],
             Usings = ["Microsoft.Data.SqlClient"],
             Connections = [Connections.SqlServer],
             Infrastructure = [Infrastructure.SqlServer],

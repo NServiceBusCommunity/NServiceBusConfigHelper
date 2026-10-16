@@ -518,6 +518,7 @@ public static partial class Features
             DocsUrl = $"{community}/NServiceBus.Community.Attachments/blob/main/docs/sql.md",
             Community = true,
             Packages = ["NServiceBus.Community.Attachments.Sql", "Microsoft.Data.SqlClient"],
+            TransitivePins = ["System.Security.Cryptography.Pkcs"],
             Usings = ["Microsoft.Data.SqlClient", "NServiceBus.Attachments.Sql"],
             Connections = [Connections.SqlServer],
             Infrastructure = [Infrastructure.SqlServer],

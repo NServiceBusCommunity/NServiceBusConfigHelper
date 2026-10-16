@@ -62,6 +62,13 @@ public abstract record ComponentDefinition
     /// <summary>Package ids the endpoint project references. Each needs a version in package-versions.json.</summary>
     public IReadOnlyList<string> Packages { get; init; } = [];
 
+    /// <summary>
+    /// Package ids a dependency brings in at a version with a known vulnerability. The generated
+    /// Directory.Packages.props pins them with transitive pinning; nothing references them directly.
+    /// Each needs a version in package-versions.json.
+    /// </summary>
+    public IReadOnlyList<string> TransitivePins { get; init; } = [];
+
     /// <summary>Namespaces <c>Program.cs</c> imports for <see cref="Code"/>.</summary>
     public IReadOnlyList<string> Usings { get; init; } = [];
 

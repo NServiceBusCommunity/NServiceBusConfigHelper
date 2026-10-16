@@ -128,6 +128,7 @@ public static class Transports
             DocsUrl = "https://docs.particular.net/transports/sql/",
             PairsWith = Persistence.SqlServer,
             Packages = ["NServiceBus.Transport.SqlServer"],
+            TransitivePins = ["System.Security.Cryptography.Pkcs"],
             Connections = [Connections.SqlServer],
             Infrastructure = [Infrastructure.SqlServer],
             Code = "var transport = new SqlServerTransport(sqlServerConnectionString);"

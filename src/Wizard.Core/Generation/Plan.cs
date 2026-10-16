@@ -130,6 +130,10 @@ public sealed record Plan(
     public IReadOnlyList<string> EndpointPackages =>
         [.. AddedPackages.Prepend("NServiceBus").Distinct(StringComparer.Ordinal)];
 
+    /// <summary>Transitive packages pinned above what the components' dependencies ask for.</summary>
+    public IReadOnlyList<string> TransitivePins =>
+        [.. Components.SelectMany(_ => _.TransitivePins).Distinct(StringComparer.Ordinal)];
+
     public IReadOnlyList<string> TestPackages
     {
         get
@@ -156,7 +160,7 @@ public sealed record Plan(
                 return AddedPackages;
             }
 
-            return [.. EndpointPackages.Concat(TestPackages).Distinct(StringComparer.Ordinal)];
+            return [.. EndpointPackages.Concat(TestPackages).Concat(TransitivePins).Distinct(StringComparer.Ordinal)];
         }
     }
 
