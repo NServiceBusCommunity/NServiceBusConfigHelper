@@ -1,5 +1,5 @@
 {
-  "updated": "2026-10-10",
+  "updated": "2026-10-19",
   "packages": {
     "Microsoft.Data.SqlClient": "7.1.1",
     "MSTest.TestAdapter": "4.5.1",
@@ -35,12 +35,12 @@
     "NServiceBus.Transport.SqlServer": "9.1.0",
     "NUnit": "5.0.0",
     "NUnit3TestAdapter": "6.3.1",
-    "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.19.1",
-    "OpenTelemetry.Extensions.Hosting": "1.19.1",
+    "OpenTelemetry.Exporter.OpenTelemetryProtocol": "1.20.0",
+    "OpenTelemetry.Extensions.Hosting": "1.20.0",
     "Serilog.Extensions.Logging": "10.0.0",
     "Serilog.Sinks.Console": "6.1.1",
     "System.Security.Cryptography.Pkcs": "10.0.13",
-    "TUnit": "1.73.19",
+    "TUnit": "1.75.0",
     "xunit.v3": "4.0.2"
   }
 }
