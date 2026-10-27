@@ -17,7 +17,7 @@ Package versions: the newest stable releases as of 2026-10-01; nuget.org was not
 
 ## Before the first run
 
-1. Install the .NET SDK 10.0.402 or a later feature band; `global.json` pins it.
+1. Install the .NET SDK 10.0.403 or a later feature band; `global.json` pins it.
 2. Start the containers the endpoint needs: `docker compose up -d`. Their passwords are in `docker-compose.yml` and `appsettings.json` in the clear, which is fine for a container on a developer's machine and nowhere else.
 3. SQL Server starts with no database. Create it once the container is up: `docker compose exec sqlserver /opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P NServiceBus-Dev-1 -C -Q "CREATE DATABASE [SampleEndpoint]"`.
 4. NServiceBus is licensed by Particular Software. See [licensing](https://docs.particular.net/nservicebus/licensing/) for the options and for where the licence file goes.
